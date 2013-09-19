@@ -1,0 +1,240 @@
+/*
+Theme Name: LGL wp-bootstrap
+Theme URI: http://www.leichtergesundleben.com/
+Description: A child theme based on the bootstrap wordpress theme
+Template:       wp-bootstrap
+
+Version:            0.8
+Author:             Leonard Tulipan
+Author URI:         http://knowhowbites.com
+
+License:            CC Attribution-NonCommercial-ShareAlike 3.0 Unported
+License URI:        http://creativecommons.org/licenses/by-nc-sa/3.0/
+*
+*/
+/* Normally you import the original style.css @import url("../wp-bootstrap/style.css"); */
+
+/* Large desktop */
+@media (min-width: 1200px) {
+.info-box {
+margin-left: -8%; 
+}
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px)  {
+
+
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px)  {
+
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px)  {
+
+}
+/* Landscape phones iphone4 (retina) */
+@media (max-width: 640px)  {
+.logo {
+text-align: center;
+}
+}
+
+@media (device-height: 568px) and (-webkit-min-device-pixel-ratio: 2) {
+/* iPhone 5 or iPod Touch 5th generation */
+}
+
+/* General styling 
+
+<!-- dark green 0f773b
+#27AE60
+2ECC71 -->
+*/
+
+/* .navbar {
+background-image: none;
+background-repeat: no-repeat;
+
+} 
+.navbar-inner {
+font-family: 'Roboto Slab', serif;
+font-weight: 100;
+background-color: #27AE60; 
+background-image: none;
+background-repeat: no-repeat;
+filter: none; */
+}
+
+/*	.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus {
+background-color: #2ECC71; 
+background-image: none;
+background-repeat: no-repeat;
+filter: none;
+}
+
+.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus {
+color: #ECF0F1;
+text-decoration: none;
+background-color: #2ECC71;
+-webkit-box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
+-moz-box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
+} 
+
+.navbar .nav > li > a,
+.navbar .brand {
+color: #ECF0F1;
+text-decoration: none;
+text-shadow: 0 1px 0 #2ECC71;
+} */
+
+.carousel-caption {
+	background: #0f773b;
+	background: rgba(15, 119, 59, 0.75);
+}
+
+a {
+	color: #27AE60;
+
+}
+a:hover,
+a:focus {
+	color: #0f773b;
+}
+
+body { 
+	padding-top:1em; 
+
+	font-family: 'PT Sans', sans-serif;
+	
+
+	/* gradient background made with http://charliepark.org/bootstrap_buttons/ */
+	background-color: hsl(64%, 7%, 94%) !important;
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff", endColorstr="#ECF0F1");
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#ffffff), to(#ECF0F1));
+	background-image: -moz-linear-gradient(top, #ffffff, #ECF0F1);
+	background-image: -ms-linear-gradient(top, #ffffff, #ECF0F1);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #ECF0F1));
+	background-image: -webkit-linear-gradient(top, #ffffff, #ECF0F1);
+	background-image: -o-linear-gradient(top, #ffffff, #ECF0F1);
+	background-image: linear-gradient(#ffffff, #ECF0F1);
+	-webkit-font-smoothing: antialiased;
+}
+
+.well .widget_search input
+{
+  width: 149px;
+}
+
+
+
+footer {
+	color: #BDC3C7;
+	padding-top: 1em;
+	/* padding below footer */
+	padding-bottom: 1em;
+
+}
+.header, .header h1, .header h2, .header h3 {
+	font-family: 'Raleway', sans-serif;
+	font-weight: 100;          
+	text-align: center;
+}
+
+.btn-social {
+	width:22px;
+}
+
+
+.info-box {
+	padding: 0 20px	 20px 0;
+}
+
+/* Debug Styles */
+.show-grid [class*="span"] [class*="span"] {
+	background-color: #ccc;
+}
+.show-grid [class*="span"] [class*="span"] [class*="span"] {
+	background-color: #999;
+}
+
+/* Footer Links as inline "Menu" */
+footer ul
+{
+list-style-type:none;
+margin:0;
+padding:0;
+}
+footer li {
+display: inline;
+}
+footer li:before {  content: " | " }
+
+footer nav div {  float: left }
+
+/* Social Buttons: Color the icons themselves (not the buttons) */
+.social .icon-facebook{ color: #3b5998}
+.social .icon-twitter { color: #2daddc}
+.social .icon-pinterest { color: #d62229}
+.social .icon-rss { color: orange}
+.social .icon-instagram { color: #6f97b6}
+
+/* Tag Cloud in green */
+
+.tagcloud .label {
+	background-color: #27AE60
+}
+
+.tagcloud .label:hover {
+	background-color: #0f773b
+}
+/* about me manual import as plugin currently doesnt work */
+#am_thumbnail a {
+text-decoration: none;
+border: none;
+}
+#am_thumbnail img {
+text-decoration: none;
+border: 1px solid #999;
+max-width: 99%;
+}
+#am_name {
+margin-top: 5px;
+margin-bottom: 3px;
+}
+#am_headline {
+margin-bottom: 5px;
+}
+#am_bio {
+margin-bottom: 15px;
+}
+#am_bio p {
+margin-bottom: 5px;
+}
+#am_bio p:last-child {
+margin-bottom: 0px;
+}
+#am_services {
+margin-right: -5px;
+}
+#am_services a.am_service_icon {
+margin-right: 4px;
+text-decoration: none;
+border: none;
+}
+#am_services a.am_service_icon:hover {
+text-decoration: none;
+border: none;
+}
+#am_services a.am_service_icon img {
+border: none;
+margin-bottom: 4px;
+}
