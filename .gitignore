@@ -2,3 +2,5 @@
 wp-config.php
 # Do not push postgres database dumps with private info out to the master github repo
 *.dump
+sitemap.xml
+sitemap.xml.gz
