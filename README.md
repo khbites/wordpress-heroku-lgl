@@ -12,22 +12,22 @@ With the [Heroku gem](http://devcenter.heroku.com/articles/heroku-command), crea
 
     $ cd wordpress-heroku
     $ heroku create
-    > Creating strange-turtle-1234... done, stack is cedar
-    > http://strange-turtle-1234.herokuapp.com/ | git@heroku.com:strange-turtle-1234.git
-    > Git remote heroku added
+    Creating strange-turtle-1234... done, stack is cedar
+    http://strange-turtle-1234.herokuapp.com/ | git@heroku.com:strange-turtle-1234.git
+    Git remote heroku added
 
 Add a database to your app
 
     $ heroku addons:add heroku-postgresql:dev
-    > Adding heroku-postgresql:dev to strange-turtle-1234... done, v2 (free)
-    > Attached as HEROKU_POSTGRESQL_COLOR
-    > Database has been created and is available
-    > Use `heroku addons:docs heroku-postgresql:dev` to view documentation
+    Adding heroku-postgresql:dev to strange-turtle-1234... done, v2 (free)
+    Attached as HEROKU_POSTGRESQL_COLOR
+    Database has been created and is available
+    Use `heroku addons:docs heroku-postgresql:dev` to view documentation
 
 Promote the database (replace COLOR with the color name from the above output)
 
     $ heroku pg:promote HEROKU_POSTGRESQL_COLOR
-    > Promoting HEROKU_POSTGRESQL_COLOR to DATABASE_URL... done
+    Promoting HEROKU_POSTGRESQL_COLOR to DATABASE_URL... done
 
 Create a new branch for any configuration/setup changes needed
 
@@ -57,75 +57,25 @@ Clear `.gitignore` and commit `wp-config.php`
 Deploy to Heroku
 
     $ git push heroku production:master
-    > -----> Heroku receiving push
-    > -----> PHP app detected
-    > -----> Bundling Apache v2.2.22
-    > -----> Bundling PHP v5.3.10
-    > -----> Discovering process types
-    >        Procfile declares types -> (none)
-    >        Default types for PHP   -> web
-    > -----> Compiled slug size is 13.8MB
-    > -----> Launcing... done, v5
-    >        http://strange-turtle-1234.herokuapp.com deployed to Heroku
-    >
-    > To git@heroku:strange-turtle-1234.git
-    > * [new branch]    production -> master
+    -----> Heroku receiving push
+    -----> PHP app detected
+    -----> Bundling Apache v2.2.22
+    -----> Bundling PHP v5.3.10
+    -----> Discovering process types
+           Procfile declares types -> (none)
+           Default types for PHP   -> web
+    -----> Compiled slug size is 13.8MB
+    -----> Launcing... done, v5
+           http://strange-turtle-1234.herokuapp.com deployed to Heroku
+    
+    To git@heroku:strange-turtle-1234.git
+      * [new branch]    production -> master
 
 After deployment WordPress has a few more steps to setup and thats it!
-
-## Media Uploads
-
-[WP Read-Only](http://wordpress.org/extend/plugins/wpro/) plugin is included in the repository allowing the use of [S3](http://aws.amazon.com/s3/) for media uploads.
-
-1. Activate the plugin under 'Plugins', if not already activated.
-2. Input your Amazon S3 credentials in 'Settings'->'WPRO Settings'.
-
 
 ## Usage
 
 Because a file cannot be written to Heroku's file system, updating and installing plugins or themes should be done locally and then pushed to Heroku.
-
-## Setting up a local environment
-
-### Mac OS X
-
-* To run WordPress locally on Mac OS X try [MAMP](http://codex.wordpress.org/Installing_WordPress_Locally_on_Your_Mac_With_MAMP).
-* This template requires Postgres as the local database so install [Postgres.app](http://postgresapp.com/)
-* Open psql, from the menubar elephant icon, and run...
-
-```
-CREATE DATABASE wordpress;
-CREATE USER wordpress WITH PASSWORD 'wordpress';
-GRANT ALL PRIVILEGES ON DATABASE wordpress to wordpress;
-```
-
-* Open /Applications/MAMP/Library/bin/envvars and add `export DATABASE_URL="postgres://wordpress:wordpress@localhost:5432/wordpress"`
-* Start MAMP and open http://localhost/wp-admin/ in a browser.
-
-### Linux, or manual Apache config
-
-* Install Postgres according to your package manager or from source
-* Execute the following commands in psql interactive shell...
-
-```
-CREATE DATABASE wordpress;
-CREATE USER wordpress WITH PASSWORD 'wordpress';
-GRANT ALL PRIVILEGES ON DATABASE wordpress to wordpress;
-```
-
-* In your Apache config, add a `SetEnv` directive like `SetEnv DATABASE_URL postgres://wordpress:wordpress@localhost:5432/wordpress`
-* Change the first line of your `wp-config.php` to use `$_SERVER["DATABASE_URL"]` if `DATABASE_URL` not found in `$_ENV`:
-
-```
-if (isset($_ENV["DATABASE_URL"]))
-  $db = parse_url($_ENV["DATABASE_URL"]);
-else
-  $db = parse_url($_SERVER["DATABASE_URL"]);
-
-```
-
-* (Re)start Apache, and open http://localhost/wp-admin in a browser.
-
 
 ## Updating
 
@@ -147,6 +97,11 @@ WordPress needs to update the database. After push, navigate to:
 WordPress will prompt for updating the database. After that you'll be good
 to go.
 
-## Custom Domains
+## Wiki
 
-For settings up a custom domain refer to the [Heroku Docs](https://devcenter.heroku.com/articles/custom-domains).
+* [Custom Domains](https://github.com/mhoofman/wordpress-heroku/wiki/Custom-Domains)
+* [Media Uploads](https://github.com/mhoofman/wordpress-heroku/wiki/Media-Uploads)
+* [Postgres Database Syncing](https://github.com/mhoofman/wordpress-heroku/wiki/Postgres-Database-Syncing)
+* [Setting Up a Local Environment on Linux (Apache)](https://github.com/mhoofman/wordpress-heroku/wiki/Setting-Up-a-Local-Environment-on-Linux-(Apache\))
+* [Setting Up a Local Environment on Mac OS X](https://github.com/mhoofman/wordpress-heroku/wiki/Setting-Up-a-Local-Environment-on-Mac-OS-X)
+* [More...](https://github.com/mhoofman/wordpress-heroku/wiki)
