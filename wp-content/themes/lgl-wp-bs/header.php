@@ -83,11 +83,11 @@
 	</div>
 
 	<div class="span3 social visible-desktop">
-		<a class="btn btn-social" href="https://www.facebook.com/LeichterGesundLeben" target="_blank" title="<?php _e("Facebook Page"); ?>"><i class="icon-facebook icon-2x"></i></a>
-		<a class="btn btn-social" href="https://twitter.com/LeichterGesund" target="_blank" title="<?php _e("Twitter"); ?>"><i class="icon-twitter icon-2x"></i></a>
+		<a class="btn btn-social" href="https://www.facebook.com/LeichterGesundLeben" target="_blank" title="<?php _e("Facebook Page"); ?>"><i class="fa fa-facebook fa-2x"></i></a>
+		<a class="btn btn-social" href="https://twitter.com/LeichterGesund" target="_blank" title="<?php _e("Twitter"); ?>"><i class="fa fa-twitter fa-2x"></i></a>
 <!--		<a class="btn btn-social" href="#"><i class="icon-pinterest  icon-2x" target="_blank" title="<?php _e("Pinterest"); ?>"></i></a> -->
-		<a class="btn btn-social" href="http://instagram.com/LeichterGesundLeben"><i class="icon-instagram  icon-2x" target="_blank" title="<?php _e("Instagram"); ?>"></i></a>
-		<a class="btn btn-social" href="<?php bloginfo('rss2_url') ?>" title="<?php _e("RSS All Articles Syndication Feed for News Reader"); ?>"><i class="icon-rss  icon-2x" target="_blank"></i></a>
+		<a class="btn btn-social" href="http://instagram.com/LeichterGesundLeben"><i class="fa fa-instagram fa-2x" target="_blank" title="<?php _e("Instagram"); ?>"></i></a>
+		<a class="btn btn-social" href="<?php bloginfo('rss2_url') ?>" title="<?php _e("RSS All Articles Syndication Feed for News Reader"); ?>"><i class="fa fa-rss fa-2x" target="_blank"></i></a>
 	</div>
 	
 	</div>

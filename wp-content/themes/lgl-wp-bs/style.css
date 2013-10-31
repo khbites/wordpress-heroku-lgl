@@ -181,11 +181,11 @@ footer li:before {  content: " | " }
 footer nav div {  float: left }
 
 /* Social Buttons: Color the icons themselves (not the buttons) */
-.social .icon-facebook{ color: #3b5998}
-.social .icon-twitter { color: #2daddc}
-.social .icon-pinterest { color: #d62229}
-.social .icon-rss { color: orange}
-.social .icon-instagram { color: #6f97b6}
+.social .fa-facebook{ color: #3b5998}
+.social .fa-twitter { color: #2daddc}
+.social .fa-pinterest { color: #d62229}
+.social .fa-rss { color: orange}
+.social .fa-instagram { color: #6f97b6}
 
 /* Tag Cloud in green */
 
