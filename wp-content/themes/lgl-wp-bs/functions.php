@@ -55,7 +55,10 @@ function theme_styles() {
     wp_register_style( 'bootstrap', get_stylesheet_directory_uri() . '/library/css/bootstrap.css', array(), '1.0', 'all');
     wp_register_style( 'bootstrap-responsive', get_stylesheet_directory_uri() . '/library/css/bootstrap-responsive.css' , array(), '1.0', 'all' );
     wp_register_style( 'social-buttons', get_stylesheet_directory_uri() . '/library/css/social-buttons.css', array(), '1.0', 'all' );
-    wp_register_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css', array(), '1.0', 'all' );
+
+
+//    wp_register_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css', array(), '1.0', 'all' );
+    wp_register_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css', array(), false, 'all' );
     
     wp_register_style( 'wp-bootstrap', get_stylesheet_uri(), array(), '1.0', 'all' );
     
