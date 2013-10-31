@@ -20,6 +20,9 @@ $db = parse_url($_ENV["DATABASE_URL"]);
 else
 $db = parse_url($_SERVER["DATABASE_URL"]);
 
+// ** Disable Automatic Updates (3.7 an onwards) **/
+define( 'AUTOMATIC_UPDATER_DISABLED', true );
+
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define('DB_NAME', trim($db["path"],"/"));
