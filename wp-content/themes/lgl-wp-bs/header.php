@@ -45,18 +45,18 @@
 
 <header role="banner">
 <div class="row-fluid masthead">
-	<div class="span3 logo">
+	<div class="span2 logo">
 		<a title="<?php echo get_bloginfo('description') . " - ";  _e("Home")?>" href="<?php echo home_url(); ?>">
 		<?php if(of_get_option('branding_logo','')!='') { ?>
 		<img src="<?php echo of_get_option('branding_logo'); ?>" alt="<?php echo get_bloginfo('description'); ?>"></a>
 		<?php }
 		if(of_get_option('site_name','1')) bloginfo('name'); ?>
 	</div>
-	<div class="span9">
+	<div class="span10">
 		<div class="header visible-desktop">
 		<h1>Leichter Gesund Leben</h1>
 		<h2>Mag. Julia Tulipan</h2>
-		<h3>Ern&auml;hrungsberaterin und Personal Trainerin</h3>
+		<h3>Ern&auml;hrungsberatung und Personal Training</h3>
 	</div>
 	</div>	
 	

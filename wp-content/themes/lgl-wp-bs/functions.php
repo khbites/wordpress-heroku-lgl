@@ -53,8 +53,8 @@ function bones_register_sidebars() {
 function theme_styles() { 
     // This is the compiled css file from LESS - this means you compile the LESS file locally and put it in the appropriate directory if you want to make any changes to the master bootstrap.css.
     wp_register_style( 'bootstrap', get_stylesheet_directory_uri() . '/library/css/bootstrap.css', array(), '1.0', 'all');
-    wp_register_style( 'bootstrap-responsive', get_stylesheet_directory_uri() . '/library/css/bootstrap-responsive.css' , array(), '1.0', 'all' );
-    wp_register_style( 'social-buttons', get_stylesheet_directory_uri() . '/library/css/social-buttons.css', array(), '1.0', 'all' );
+    wp_register_style( 'bootstrap-responsive', get_stylesheet_directory_uri() . '/library/css/bootstrap-responsive.css' , array(), false, 'all' );
+    wp_register_style( 'social-buttons', get_stylesheet_directory_uri() . '/library/css/social-buttons.css', array(), false, 'all' );
 
 
 //    wp_register_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css', array(), '1.0', 'all' );

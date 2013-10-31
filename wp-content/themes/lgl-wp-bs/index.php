@@ -2,7 +2,8 @@
 			
 			<?php
 				$blog_hero = of_get_option('blog_hero');
-				if ($blog_hero){
+				if (false){
+				//if ($blog_hero){
 			?>
 			<div class="clearfix row-fluid">
 				<div class="hero-unit">
@@ -54,8 +55,12 @@
 					<?php endif; ?>
 			
 				</div> <!-- end #main -->
-    
-				<?php get_sidebar(); // sidebar 1 ?>
+				<?php 
+
+                                 // if (is_front_page() && is_active_sidebar( 'sidebar-home' ) ) { 
+			           get_sidebar( 'sidebar2' ); 
+
+				?>
     
 			</div> <!-- end #content -->
 
