@@ -60,7 +60,7 @@ background-repeat: no-repeat;
 
 } 
 .navbar-inner {
-font-family: 'Roboto Slab', serif;
+font-family: 'Raleway', serif !important;
 font-weight: 100;
 background-color: #27AE60; 
 background-image: none;
@@ -101,18 +101,18 @@ text-shadow: 0 1px 0 #2ECC71;
 }
 
 a {
-	color: #27AE60;
+	color: #869fb7;
 
 }
 a:hover,
 a:focus {
-	color: #0f773b;
+	color: #9dc9b7;
 }
 
 body { 
 	padding-top:1em; 
 
-	font-family: 'PT Sans', sans-serif;
+	font-family: 'PT Sans', sans-serif !important;
 	
 
 	/* gradient background made with http://charliepark.org/bootstrap_buttons/ */
@@ -144,7 +144,7 @@ footer {
 
 }
 .header, .header h1, .header h2, .header h3 {
-	font-family: 'Raleway', sans-serif;
+	font-family: 'Raleway', sans-serif !important;
 	font-weight: 100;          
 //	text-align: center;
 }
@@ -190,51 +190,53 @@ footer nav div {  float: left }
 /* Tag Cloud in green */
 
 .tagcloud .label {
-	background-color: #27AE60
+	background-color: #869fb7;
+	border: 1px solid #869fb7;
 }
 
 .tagcloud .label:hover {
-	background-color: #0f773b
+	background-color:  #9dc9b7;
+        text-shadow: none;
+	border: 1px solid black;
+
 }
-/* about me manual import as plugin currently doesnt work */
-#am_thumbnail a {
-text-decoration: none;
-border: none;
+
+/*p class=lead same size as normal text */
+.lead {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: normal;
 }
-#am_thumbnail img {
-text-decoration: none;
-border: 1px solid #999;
-max-width: 99%;
+
+/* Fill header image to full width (featured images)*/
+header .wp-post-image {
+  width: 870px;
 }
-#am_name {
-margin-top: 5px;
-margin-bottom: 3px;
+
+.home article.post {
+
+   border-bottom: 3px double grey !important;
+   margin-bottom: 15px !important; 
 }
-#am_headline {
-margin-bottom: 5px;
+
+.home article.post header img{
+ border-radius: 30px;
 }
-#am_bio {
-margin-bottom: 15px;
+
+.home .page-header {
+ background-color: #eee;
+ padding: 5px;
+ margin-bottom: 0 !important;
 }
-#am_bio p {
-margin-bottom: 5px;
+
+.home header .meta {
+ background-color: #e2e2e2;
+ text-align: right;
 }
-#am_bio p:last-child {
-margin-bottom: 0px;
+.home footer .tags {
+ display: none;
 }
-#am_services {
-margin-right: -5px;
-}
-#am_services a.am_service_icon {
-margin-right: 4px;
-text-decoration: none;
-border: none;
-}
-#am_services a.am_service_icon:hover {
-text-decoration: none;
-border: none;
-}
-#am_services a.am_service_icon img {
-border: none;
-margin-bottom: 4px;
+.more-link {
+ margin-top: 20px;
+ display: block;
 }
