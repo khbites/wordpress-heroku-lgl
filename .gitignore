@@ -14,4 +14,3 @@ db.*sh
 #      git checkout development
 #      mv wpro.submodule wpro
 *.submodule
-.htconfig
