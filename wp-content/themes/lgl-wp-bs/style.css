@@ -126,7 +126,7 @@ body {
 	background-image: -webkit-linear-gradient(top, #ffffff, #ECF0F1);
 	background-image: -o-linear-gradient(top, #ffffff, #ECF0F1);
 	background-image: linear-gradient(#ffffff, #ECF0F1);
-	-webkit-font-smoothing: antialiased;
+ 	-webkit-font-smoothing: antialiased;
 }
 
 .well .widget_search input
