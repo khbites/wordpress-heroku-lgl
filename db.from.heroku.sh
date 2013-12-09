@@ -1,5 +1,5 @@
-sudo heroku pgbackups:capture -a leichtergesundleben --expire
-curl -o latest.dump `heroku pgbackups:url`
+sudo heroku pgbackups:capture --app leichtergesundleben --expire
+curl -o latest.dump `heroku pgbackups:url --app leichtergesundleben`
 echo "Date of latest.dump:"
  ls --time-style full-iso -l latest.dump |awk '{print $6}'
 echo "Now run: "
