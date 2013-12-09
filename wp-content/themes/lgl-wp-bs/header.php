@@ -44,22 +44,7 @@
 <div class="container">
 
 <header role="banner">
-<div class="row-fluid masthead">
-	<div class="span2 logo">
-		<a title="<?php echo get_bloginfo('description') . " - ";  _e("Home")?>" href="<?php echo home_url(); ?>">
-		<?php if(of_get_option('branding_logo','')!='') { ?>
-		<img src="<?php echo of_get_option('branding_logo'); ?>" alt="<?php echo get_bloginfo('description'); ?>"></a>
-		<?php }
-		if(of_get_option('site_name','1')) bloginfo('name'); ?>
-	</div>
-	<div class="span10">
-		<div class="header visible-desktop">
-		<h1>Leichter Gesund Leben</h1>
-		<h2>Mag. Julia Tulipan</h2>
-		<h3>Ern&auml;hrungsberatung und Personal Training</h3>
-	</div>
-	</div>	
-	
+<div class="row-fluid masthead">	
 	<div class="row-fluid">
 		<div class="span9">
 			<div class="navbar">
@@ -71,7 +56,9 @@
 	            <span class="icon-bar"></span>
 	            <span class="icon-bar"></span>
 	          </button>
-	          <a class="brand hidden-desktop" id="logo" title="<?php echo get_bloginfo('description'); ?>" href="<?php echo home_url(); ?>"><?php echo get_bloginfo('name'); ?></a>
+	          <a class="brand" id="logo" title="<?php echo get_bloginfo('description'); ?>" href="<?php echo home_url(); ?>">
+	          	<img src="http://s3-eu-west-1.amazonaws.com/leichtergesundleben/lgl-logo-txt.png" alt="<?php echo get_bloginfo('name'); ?> Logo">
+	          </a>
 
 	          <div class="nav-collapse collapse">
 	            <?php bones_main_nav(); // Adjust using Menus in Wordpress Admin ?>
