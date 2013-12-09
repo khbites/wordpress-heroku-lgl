@@ -245,3 +245,14 @@ header .wp-post-image {
 .navbar .brand { 
 	padding: 2px 2px 2px;
 	}
+
+.navbar .nav { 
+	float: right;
+    }
+ p {
+ 	text-align: justify;
+ }
+
+ .post_content img {
+ 	padding-bottom: 1em;
+ }
