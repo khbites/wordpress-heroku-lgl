@@ -3,8 +3,8 @@ Contributors: daveshine, deckerweb
 Donate link: http://genesisthemes.de/en/donate/
 Tags: jetpack, translation, german, deutsch, de, de_DE, germany, deutschland, deutschsprachig, language, language pack, übersetzung, stats, wordpress.com, deckerweb
 Requires at least: 3.4 and Jetpack 2.0+
-Tested up to: 3.6
-Stable tag: 1.6.0
+Tested up to: 3.8
+Stable tag: 1.7.0
 License: GPL-2.0+
 License URI: http://www.opensource.org/licenses/gpl-license.php
 
@@ -20,14 +20,14 @@ Use Jetpack with proper German translations. Approved for client usage. Jetpack 
 > 
 > **Nutzen:**
 > 
-> * Endlich das Plugin in vernünftigem Deutsch verwenden - durchgängig konsistente Begriffe - komplette Übersetzung
+> * Endlich das Plugin in vernünftigem Deutsch verwenden - durchgängig konsistente Begriffe - komplette Übersetzung, inklusive Fehlerbehebungen
 > * Kliententauglich: Sprachdatei von Jargon-/ Slang-Ausdrücken bereinigt
 > * Von den Jetpack-Aktualisierungszyklen unabhängige Sprachdateien (d.h. die Sprachdatei ist nicht immer eine Version zurück...)
 > * Immer aktuell - bei neuen Jetpack-Versionen ziehen wir nach :-) - dieses Plugin ist über das Plugin-Repositorium hier aktualisierbar und somit können wir "im laufenden Betrieb" aktualisieren und sind nicht mehr auf das Hinzufügen durch die Jetpack-Entwickler (bzw. deren Automatismus...) angewiesen.
-> * Funktioniert mit verschiedenen Jetpack-Versionen, ab Jetpack 1.9 oder höher!
+> * Funktioniert mit verschiedenen Jetpack-Versionen, ab Jetpack 1.9 oder höher - neueste immer empfohlen!
 > * Komplett übersetzt (das, was technisch geht, wird immer zu 100% übersetzt!)
 > * Sprachdateien aus einer Hand für DU- und SIE-Version
-> * BONUS: SIE-Version endlich möglich über benutzerdefinierten Ordner im WordPress-Sprachdateien-Ordner
+> * BONUS: SIE-Version endlich möglich: (automatisch) via Mini-Plugin, oder über benutzerdefinierten Ordner im WordPress-Sprachdateien-Ordner
 > * Feedback/ Korrekturen von Anwendern fliesst in Sprachdateipflege regelmässig mit ein
 
 **Funktionsweise:**
@@ -40,22 +40,24 @@ Use Jetpack with proper German translations. Approved for client usage. Jetpack 
 
 **Voraussetzungen:**
 
-* Jetpack ab Version mind. 1.9 oder höher (2.0+ bzw. aktuellste immer empfohlen!)
-* Damit verbunden WordPress ab Version 3.4 oder höher (3.4.2+ empfohlen!)
-* Achtung: Es wird immer nur die neueste Version von Jetpack unterstützt - Rückwärtskomtabilität ist sicherlich in gewissem Grad möglich, wird aber nicht berücksichtigt! Beispielsweise sollte Jetpack 1.9.x auch mit der 2.0er Übersetzung ordentlich laufen, und umgekehrt. Dennoch, immer Jetpack schön aktuell halten. Wir ziehen nach neuen Versionen immer kurzfristig nach :).
+* Jetpack ab Version mind. 1.9 oder höher (2.7+ bzw. aktuellste immer empfohlen!)
+* Damit verbunden WordPress ab Version 3.4 oder höher (3.8+ empfohlen!)
+* Achtung: Es wird immer nur die neueste Version von Jetpack unterstützt - Rückwärtskomtabilität ist sicherlich in gewissem Grad möglich, wird aber nicht berücksichtigt! Beispielsweise sollte Jetpack 1.9.x auch mit der 2.7er Übersetzung ordentlich laufen, und umgekehrt. Dennoch, immer Jetpack schön aktuell halten. Wir ziehen nach neuen Versionen immer kurzfristig nach :).
 
 **Was bislang nicht geht:**
 
 * Jetpack-eigenes Kommentarsystem - da über iframe von WordPress.com geladen!
+* Jetpack Statistik-Modul: ein Großteil der Texte im Adminbereich wird dynamisch von WordPress.com geladen - und die haben derzeit nur informelle Texte (DU-Anrede)
 * Das, was die Jetpack-Entwickler vergessen haben, übersetzbar zu machen...
 
-**Hinweis:** Dieses Plugin ist ein reines Sprach-/ Übersetzungs-Plugin, es hat nichts mit Datenschutz bzw. "Rechtssicherheit" zu tun. Bitte die anderen Hinweise hier beachten, sowie auch im [FAQ-Bereich](http://wordpress.org/extend/plugins/jetpack-de/faq/) und [Installation](http://wordpress.org/extend/plugins/jetpack-de/installation/)!
+**Hinweis:** Dieses Plugin ist ein reines Sprach-/ Übersetzungs-Plugin, es hat nichts mit Datenschutz bzw. "Rechtssicherheit" zu tun. Bitte die anderen Hinweise hier beachten, sowie auch im [FAQ-Bereich](http://wordpress.org/plugins/jetpack-de/faq/) und [Installation](http://wordpress.org/plugins/jetpack-de/installation/)!
 
 **Haftungsausschluss:** Durch den Einsatz dieses Plugins und der damit angebotenen Sprachdateien entstehen KEINE Garantien für eine korrekte Funktionsweise oder etwaige Verpflichtungen durch den Übersetzer! — Alle Angaben ohne Gewähr. Änderungen und Irrtümer ausdrücklich vorbehalten. Verwendung des Plugins inkl. Sprachdateien geschieht ausschliesslich auf eigene Verantwortung!
 
 **Empfohlene Plugins für Jetpack:**
 
-* [Manual Control for Jetpack](http://wordpress.org/extend/plugins/manual-control/) - Jetpack aktiviert automatisch neue Module, ohne nach der Berechtigung zu fragen. Dieses Plugin stoppt dieses Verhalten!
+* [Manual Control for Jetpack](http://wordpress.org/plugins/manual-control/) - Jetpack aktiviert automatisch neue Module, ohne nach der Berechtigung zu fragen. Dieses Plugin stoppt dieses Verhalten!
+* [Rocketeer](http://wordpress.org/plugins/rocketeer/) - Viel übersichtlichere, erweitertete Kontrolle über alle Jetpack Module.
 
 [Ein Plugin von deckerweb.de und GenesisThemes.de](http://genesisthemes.de/)
 
@@ -123,7 +125,7 @@ Ja, leider.
 
 Ebenso wie "Akismet" enthalten auch die WordPress.com Statistiken bislang ungelöste datenschutzrechtliche Probleme innerhalb Deutschlands bzw. der Europäischen Union. Es ist unklar, auf welchen Servern die eigenen Daten bzw. die Daten von Besuchern landen und welche Drittanbieter damit Auswertungen vornehmen. Transparenz wurde hier immer noch nicht hergestellt. Du solltest Dich am besten an den entsprechenden Datenschutzbeauftragten Deines Bundeslandes für weitere Informationen wenden.
 
-*Tipp:* Die selbstgehostete [Webanalyse-Software "Piwik" (www.piwik.org)](http://piwik.org/) ist datenschutzfreundlich und die bis dato am besten kompatible (bzw. anpassbare Lösung) an geltende deutsche/ EU-weite Datenschutzbestimmungen. Es gibt auch ein entsprechendes  [WordPress Plugin "WP-Piwik" (wordpress.org/extend/plugins/wp-piwik/)](http://wordpress.org/extend/plugins/wp-piwik/) dafür.
+*Tipp:* Die selbstgehostete [Webanalyse-Software "Piwik" (www.piwik.org)](http://piwik.org/) ist datenschutzfreundlich und die bis dato am besten kompatible (bzw. anpassbare Lösung) an geltende deutsche/ EU-weite Datenschutzbestimmungen. Es gibt auch ein entsprechendes  [WordPress Plugin "WP-Piwik" (wordpress.org/extend/plugins/wp-piwik/)](http://wordpress.org/plugins/wp-piwik/) dafür.
 
 **2) Jetpack: Kommentarfunktion**
 
@@ -153,15 +155,22 @@ define( 'WPLANG', 'de_DE' );
 `
 
 = Wie kann die SIE-Version aktiviert werden? =
-Einfach eine entsprechende Sprachdatei mit diesem Dateinamen `jetpack-de_DE.mo` in folgenden Ordner von WordPress einfügen: `/wp-content/languages/jetpack-de/formal/` -- dann lädt das Plugin automatisch diese Datei und ignoriert alle anderen!
+*Möglich mit 2 Alternativen:*
 
-Die Bonus-Datei dafür ist im Plugin-Ordner "/bonus_sie-version/" enthalten :-)
+(1) Das Mini-Plugin von hier herunterladen: https://gist.github.com/deckerweb/7976348 -- die Datei unter folgendem Pfad speichern auf dem Webserver:
+/wp-content/plugins/custom-jetpack-de/custom-jetpack-de.php (Ordner "custom-jetpack-de" einfach anlegen). Plugin aktivieren, fertig! :) --- Je nach Wunsch können die entsprechenden Filter aktiviert oder deaktiviert, bzw. Parameter geändert werden.
+
+(2) Einfach eine entsprechende Sprachdatei mit diesem Dateinamen `jetpack-de_DE.mo` in folgenden Ordner von WordPress einfügen: `/wp-content/languages/jetpack-de/custom/` -- dann lädt das Plugin automatisch diese Datei und ignoriert alle anderen! Die Bonus-Datei dafür ist im Plugin-Ordner "/bonus_sie-version/" enthalten :-)
+
+**Bis** einschließlich Version 1.6.0 dieses Plugins war noch der Ordnerpfad `/wp-content/languages/jetpack-de/formal/` möglich. Dies wurde jedoch **ab Version 1.7.0 eingestellt** - bitte nun den "custom"-Unterordner oder das Mini-Plugin verwenden!
 
 = Wie kann ich meine eigene Sprachdatei nutzen? =
 Einfach eine entsprechende Sprachdatei mit diesem Dateinamen `jetpack-de_DE.mo` in folgenden Ordner von WordPress einfügen: `/wp-content/languages/jetpack-de/custom/` -- dann lädt das Plugin automatisch diese Datei und ignoriert alle anderen (bitte obige Sie-Variante dann löschen)!
 
 = Nicht komplett: es sind immer noch einzelne Worte bzw. Passagen auf Englisch! =
 Dafür kann ich nichts, im Original-Plugin sind immer noch einige wenige Textdomains falsch gesetzt, sodass die bereits vorhandenen Übersetzungen in der Sprachdatei nicht angezeigt werden. Ausserdem kann es sein, dass einige Passagen noch nicht übersetzbar gemacht worden sind, d.h. noch keine PHP-Gettext-Funktionalität implementiert wurde.
+
+Seit Version 1.4.2 dieses Plugins, versuche ich zwar etliche Textdomain-Fehler von Jetpack mit zu beheben, aber eine Garantie, dass es auf allen Ansichten immer funktioniert, kann ich natürlich auch nicht geben.
 
 = Durch Übersetzungsfehler habe ich Probleme mit Kunden bekommen... =
 Dafür kann ich nichts! Siehe *Haftungsausschluss: Durch den Einsatz dieses Plugins und der damit angebotenen Sprachdateien entstehen KEINE Garantien für eine korrekte Funktionsweise oder etwaige Verpflichtungen durch den Übersetzer! — Alle Angaben ohne Gewähr. Änderungen und Irrtümer ausdrücklich vorbehalten. Verwendung des Plugins inkl. Sprachdateien geschieht ausschliesslich auf eigene Verantwortung!*
@@ -178,6 +187,18 @@ DE: Derzeit nicht relevant.
 EN: Not relevant at the moment.
 
 == Changelog ==
+
+= 1.7.0 (2013-12-15) =
+* DE:
+ * Sprachdateien für Jetpack v2.4.2 - v2.7.
+ * Plugin-Logik sowie Funktionen komplett erneuert und Ladelogik für Übersetzungen verbessert.
+ * Unterstützung für Drittanbieter Jetpack Add-Ons eingeführt!
+ * "Rocketeer", "Jetpack Post Views" sowie "Jetpack Popular Posts" werden als erste Dritt-Plugins für Jetpack automatisch mit unterstützt! :)
+* EN:
+ * Updated language packs for Jetpack v2.4.2 - v2.7.
+ * Completely rewrote plugin logic and functions, improved loading logic for translations.
+ * Support for third-party Jetpack add-ons now possible!
+ * "Rocketeer", "Jetpack Post Views" and "Jetpack Popular Posts" are the first third-party add-ons to be included/ supported! :)
 
 = 1.6.0 (2013-09-05) =
 * DE: Sprachdateien für Jetpack v2.4/ v2.4.1.
@@ -288,6 +309,9 @@ EN: Not relevant at the moment.
 
 == Upgrade Notice ==
 
+= 1.7.0 =
+DE: Aktualisierungen der Sprachpakete für Jetpack v2.4.2 - v2.7 -- EN: Updated the language packs for Jetpack v2.4.2 - v2.7
+
 = 1.6.0 =
 DE: Aktualisierungen der Sprachpakete für Jetpack v2.4/ v2.4.1 -- EN: Updated the language packs for Jetpack v2.4/ v2.4.1
 
@@ -335,7 +359,10 @@ DE: Erstveröffentlichung :). -- EN: Just released into the wild.
 
 == Unterstützte Jetpack-Versionen / Supported Jetpack Versions ==
 
-* v2.4 / v2.4.1
+* v2.7 -- **current & recommended!**
+* v2.6 / v2.6.1
+* v2.5
+* v2.4 / v2.4.1 / v2.4.2
 * v2.3 / v2.3.1 / v2.3.2 / v2.3.3 / v2.3.4 / v2.3.5
 * v2.2 / v2.2.1 / v2.2.2 / v2.2.3 / v2.2.4 / v2.2.5
 * v2.1 / v2.1.1 / v2.1.2
@@ -345,7 +372,7 @@ DE: Erstveröffentlichung :). -- EN: Just released into the wild.
 
 == Unterstützte SlimJetpack-Versionen / Supported SlimJetpack Versions ==
 
-* v2.1.1 / v2.1.1.3
+* v2.1.1 - v2.7
 
 DE: Keine Garantie, aber die meisten Strings werden übersetzt ausgeliefert.
 
@@ -353,14 +380,23 @@ EN: No warranty supplied!
 
 == Unterstützte Jetpack Lite-Versionen / Supported Jetpack Lite Versions ==
 
-* v2.1.2
+* v2.1.2 - v2.3.4.1
 
 DE: Ebenfalls keine Garantie, aber auch hier werden die meisten Strings übersetzt ausgeliefert.
 
 EN: Again, no warranty supplied!
 
+== Unterstützte Drittanbieter-Erweiterungen / Supported Third-Party Add-Ons ==
+
+*Möglich seit Version v1.7.0 dieses Plugins / Possible since this plugin version v1.7.0+*
+
+* Rocketeer, v1.0.1+
+* Jetpack Popular Posts, v1.0.1+
+* Jetpack Post Views, v1.1.0+
+
 == Plugin-Links ==
 * [Benutzer-Supportforum](http://wordpress.org/support/plugin/jetpack-de) (Hinweis: Nur auf Englisch zugelassen bei WordPress.org)
+* [Mini-Zusatz-Plugin, benutzerdefinierte Filter, GitHub Gist](https://gist.github.com/deckerweb/7976348)
 
 == Spenden ==
 Wenn das Plugin *Jetpack German (de_DE)* gefällt, warum nicht einfach [spenden für die Weiterentwicklung und die Übersetzungsarbeit](http://deckerweb.de/sprachdateien/spenden/)? - Vielen Dank!
@@ -370,7 +406,7 @@ Wenn das Plugin *Jetpack German (de_DE)* gefällt, warum nicht einfach [spenden 
 * English - default, always included
 * German (de_DE): Deutsch - immer dabei! [Download auch via deckerweb.de](http://deckerweb.de/material/sprachdateien/wordpress-plugins/#jetpack-german-de)
 
-*Note:* All my plugins are internationalized/ translateable by default. This is very important for all users worldwide. So please contribute your language to the plugin to make it even more useful. For translating I recommend the awesome ["Codestyling Localization" plugin](http://wordpress.org/extend/plugins/codestyling-localization/) and for validating the ["Poedit Editor"](http://www.poedit.net/), which works fine on Windows, Mac and Linux.
+*Note:* All my plugins are internationalized/ translateable by default. This is very important for all users worldwide. So please contribute your language to the plugin to make it even more useful. For translating I recommend the awesome ["Codestyling Localization" plugin](http://wordpress.org/plugins/codestyling-localization/) and for validating the ["Poedit Editor"](http://www.poedit.net/), which works fine on Windows, Mac and Linux.
 
 == Reine "Jetpack" Übersetzung/ Sprachdatei generell (ohne Plugin) ==
 

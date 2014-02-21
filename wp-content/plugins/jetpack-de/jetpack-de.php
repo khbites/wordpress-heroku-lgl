@@ -2,20 +2,22 @@
 /**
  * Main plugin file.
  * Use Jetpack with proper German translations. Approved for client usage.
- * Jetpack endlich in vernünftigem Deutsch. Kliententauglich.
+ *    Jetpack endlich in vernünftigem Deutsch. Kliententauglich.
  *
- * @package   Jetpack German (de_DE)
- * @author    David Decker
- * @link      http://deckerweb.de/twitter
- * @copyright Copyright (c) 2012-2013, David Decker - DECKERWEB
+ * @package     Jetpack German (de_DE)
+ * @author      David Decker
+ * @copyright   Copyright (c) 2012-2013, David Decker - DECKERWEB
+ * @license     GPL-2.0+
+ * @link        http://deckerweb.de/twitter
  *
+ * @wordpress-plugin
  * Plugin Name: Jetpack German (de_DE)
- * Plugin URI: http://genesisthemes.de/en/wp-plugins/jetpack-de/
+ * Plugin URI:  http://genesisthemes.de/en/wp-plugins/jetpack-de/
  * Description: Use Jetpack with proper German translations. Approved for client usage. Jetpack endlich in vernünftigem Deutsch. Kliententauglich.
- * Version: 1.6.0
- * Author: David Decker - DECKERWEB
- * Author URI: http://deckerweb.de/
- * License: GPL-2.0+
+ * Version:     1.7.0
+ * Author:      David Decker - DECKERWEB
+ * Author URI:  http://deckerweb.de/
+ * License:     GPL-2.0+
  * License URI: http://www.opensource.org/licenses/gpl-license.php
  * Text Domain: jetpack-german
  * Domain Path: /jpde-languages/
@@ -45,7 +47,7 @@
  *
  * @since 1.0.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'WPINC' ) ) {
 	exit( 'Sorry, you are not allowed to access this file directly.' );
 }
 
@@ -65,9 +67,22 @@ define( 'JPDE_PLUGIN_BASEDIR', trailingslashit( dirname( plugin_basename( __FILE
 define( 'JPDE_PLUGIN_URI', trailingslashit( plugin_dir_url( __FILE__ ) ) );
 
 
+add_action( 'plugins_loaded', 'ddw_jpde_load_helpers', 8 );
+/**
+ * Load helper functions early, to have them available now :).
+ *
+ * @since 1.7.0
+ */
+function ddw_jpde_load_helpers() {
+
+	require_once( JPDE_PLUGIN_DIR . 'includes/jpde-get-settings.php' );
+
+}  // end function
+
+
 add_action( 'init', 'ddw_jpde_init' );
 /**
- * Load the text domain for translation of the plugin.
+ * Load the text domain for translation of this plugin.
  * Load admin helper functions - only within 'wp-admin'.
  * 
  * @since 1.0.0
@@ -79,8 +94,7 @@ add_action( 'init', 'ddw_jpde_init' );
 function ddw_jpde_init() {
 
 	/** Set filter for plugin's languages directory */
-	$jpde_lang_dir = JPDE_PLUGIN_BASEDIR . 'jpde-languages/';
-	$jpde_lang_dir = apply_filters( 'jpde_filter_lang_dir', $jpde_lang_dir );
+	$jpde_lang_dir = apply_filters( 'jpde_filter_lang_dir', JPDE_PLUGIN_BASEDIR . 'jpde-languages/' );
 
 	/** If 'wp-admin' include translations plus admin helper functions */
 	if ( is_admin() ) {
@@ -88,7 +102,7 @@ function ddw_jpde_init() {
 		/** Load plugin textdomain plus translation files */
 		load_plugin_textdomain( 'jetpack-german', FALSE, $jpde_lang_dir );
 
-		require_once( JPDE_PLUGIN_DIR . 'includes/jpde-admin.php' );
+		include_once( JPDE_PLUGIN_DIR . 'includes/jpde-admin.php' );
 
 	}  // end-if is_admin() check
 
@@ -102,171 +116,310 @@ function ddw_jpde_init() {
 
 	}  // end-if is_admin() & cap check
 
+	/** Include deprecated classes/ functions */
+	include_once( JPDE_PLUGIN_DIR . 'includes/jpde-deprecated.php' );
+
 }  // end of function ddw_jpde_init
 
 
-add_action( 'plugins_loaded', 'ddw_jpde_load_textdomain' );
 /**
- * Load the German Jetpack translations by DECKERWEB.
+ * Get the Blog/ Site upload location location for URL or path, and for
+ *    Multisite or not.
  *
- * @since  1.0.0
+ * Takes account of multisite usage, and domain mapping.
  *
- * @uses   get_locale()
- * @uses   load_textdomain()
+ * @author StudioPress
+ * @link   http://www.studiopress.com/
+ * @author David Decker - DECKERWEB
+ * @link   http://deckerweb.de/twitter
  *
- * @param  $mofile
+ * @since  1.7.0
  *
- * @return string Strings from .mo file for loading & displaying translations.
+ * @uses   wp_upload_dir()
+ *
+ * @param  string 	$type Either 'url' or anything else e.g. 'path'.
+ *
+ * @return string String of path or URL of WordPress upload directory.
  */
-function ddw_jpde_load_textdomain() {
+function ddw_jpde_get_site_upload_location( $type ) {
 
-	/** Check for formal version */
-	if ( is_readable( trailingslashit( WP_LANG_DIR ) . 'jetpack-de/formal/jetpack-de_DE.mo' ) ) {
+	/** Get the uploads directory -- supports Multisite of course */
+	$uploads = wp_upload_dir();
+	$dir     = ( 'url' == $type ) ? $uploads[ 'baseurl' ] : $uploads[ 'basedir' ];
 
-		$mofile = trailingslashit( WP_LANG_DIR ) . 'jetpack-de/formal/' . apply_filters( 'jpde_jetpack_formal_locale', 'jetpack-' . get_locale() ) . '.mo';
+	/** Return Blog/ Site upload location */
+	return apply_filters( 'jpde_filter_get_site_upload_location', $dir . '/' );
+
+}  // end of function ddw_jpde_get_site_upload_location
+
+
+/**
+ * Loading logic for (various) textdomains, based on different locations of the
+ *    language files.
+ *
+ * @since  1.7.0
+ *
+ * @uses   get_locale() Get WPLANG locale string.
+ * @uses   ddw_jpde_variant_is_formal() Holds setting for preferred language variant.
+ * @uses   WP_LANG_DIR Defined global language location/ folder.
+ * @uses   ddw_jpde_get_site_upload_location() Helps determine the path/URL string for upload location.
+ * @uses   WP_PLUGIN_DIR Defined global plugin location/ folder.
+ * @uses   load_textdomain() Loads translation file for a given textdomain.
+ *
+ * @param  array 	$textdomains Array of used textdomains for a plugin.
+ * @param  string 	$slug The given plugin folder/ file slug.
+ * @param  bool 	$neutral If a plugin ignores formal/ informal variants, and is "neutral".
+ *
+ * @return string Function load_textdomain() with given parameters.
+ */
+function ddw_jpde_load_custom_translations( $textdomains, $slug, $neutral = false ) {
+	
+	/** Get locale setting from WordPress */
+	$locale = get_locale();
+
+	$mofilepath = '';
+
+	/** Language variant checks - formal/ informal */
+	if ( ddw_jpde_variant_is_formal() ) {
+
+		$variant_slug = ( ! $neutral ) ? 'sie-version/' : '';
+
+	} elseif ( ! ddw_jpde_variant_is_formal() ) {
+
+		$variant_slug = ( ! $neutral ) ? 'du-version/' : '';
+
+	}  // end if
+
+
+	/** Making base slug filterable */
+	$jpde_main_slug = 'jetpack-de';
+	$jpde_main_slug = apply_filters( 'jpde_filter_main_slug', esc_attr( $jpde_main_slug ) );
+
+	/** WP_LANG_DIR file path to check/ load */
+	$jpde_wp_lang_dir_path = trailingslashit( WP_LANG_DIR ) . $jpde_main_slug . '/' . $slug . '/' . $variant_slug . $slug . '-' . $locale . '.mo';
+
+	/** WP_LANG_DIR custom file path to check/ load - especially for backwards compatibility */
+	$jpde_wp_lang_dir_custom_path = trailingslashit( WP_LANG_DIR ) . 'jetpack-de/custom/' . $slug . '-' . $locale . '.mo';
+
+	/** (Site) UPLOAD_DIR file path to check/ load */
+	$jpde_upload_dir_path = ddw_jpde_get_site_upload_location( 'path' ) . $jpde_main_slug . '/' . $slug . '/' . $variant_slug . $slug . '-' . $locale . '.mo';
+
+	/** WP_PLUGIN_DIR file path to check/ load --- fallback to our plugin! */
+	$jpde_plugindir_slug = apply_filters(
+		'jpde_filter_plugindir_slug',
+		trailingslashit( dirname( plugin_basename( __FILE__ ) ) )
+	);
+
+	$jpde_plugin_path = trailingslashit( WP_PLUGIN_DIR ) . $jpde_plugindir_slug . 'jp-pomo/' . $slug . '/' . $variant_slug . $slug . '-' . $locale . '.mo';
+
+
+	/** (1) WP_LANG_DIR branch: */
+	if ( is_readable( $jpde_wp_lang_dir_path ) ) {
+
+		$mofilepath = $jpde_wp_lang_dir_path;
 
 	}
 
-	/** Then check for custom version */
-	elseif ( is_readable( trailingslashit( WP_LANG_DIR ) . 'jetpack-de/custom/jetpack-de_DE.mo' ) ) {
-
-		$mofile = trailingslashit( WP_LANG_DIR ) . 'jetpack-de/custom/' . apply_filters( 'jpde_jetpack_custom_locale', 'jetpack-' . get_locale() ) . '.mo';
+		/** (2) WP_LANG_DIR custom branch: */
+	elseif ( is_readable( $jpde_wp_lang_dir_custom_path ) ) {
+		
+		$mofilepath = $jpde_wp_lang_dir_custom_path;
 
 	}
 
-	/** Otherwise load plugin default */
-	else {
+		/** (3) UPLOAD_DIR branch: */
+	elseif ( is_readable( $jpde_upload_dir_path ) ) {
+		
+		$mofilepath = $jpde_upload_dir_path;
 
-		$mofile = trailingslashit( WP_PLUGIN_DIR ) . 'jetpack-de/jp-pomo/' . apply_filters( 'jpde_jetpack_plugin_locale', 'jetpack-' . get_locale() ) . '.mo';
+	}
 
-	}  // end-if file checks
+		/** (4) Plugin standard branch: */
+	elseif ( is_readable( $jpde_plugin_path ) ) {
 
-	/** Finally, load the translations */
-	if ( file_exists( $mofile ) ) {
+		$mofilepath = $jpde_plugin_path;
 
-		return load_textdomain( 'jetpack', $mofile );
-
-	}  // end-if $mofile check
-
-}  // end of function ddw_jpde_load_textdomain
+	}  // end if/ elseif language location folders
 
 
-add_filter( 'load_textdomain_mofile', 'ddw_jpde_load_textdomain_file', 10, 2 );
+	/** Prepare for output of translations */
+	if ( $mofilepath ) {
+
+		/** Repeat for every given textdomain of our array */
+		foreach ( (array) $textdomains as $textdomain ) {
+
+			/** Finally load every textdomain from the given .mo file path */
+			load_textdomain( $textdomain, $mofilepath );
+
+		}  // end foreach
+
+	}  // end if
+
+}  // end of function ddw_jpde_load_custom_translations
+
+
+add_action( 'plugins_loaded', 'ddw_jpde_translation_loader', 9 );
 /**
- * Additional filter 'load_textdomain_mofile' to enforce the loading of the
- *    German Jetpack translations by DECKERWEB.
+ * Translation loader for loading translations, depending on location
+ *    (frontend & admin; frontend only; admin only). For "Jetpack"
+ *    (main plugin), plus third-party add-ons.
  *
- * @since  1.4.2
+ * @since 1.7.0
  *
- * @uses   get_locale()
- * @uses   load_textdomain()
- *
- * @param  $moFile
- * @param  $domain
- *
- * @return string Strings from .mo file for loading & displaying translations.
+ * @uses  ddw_jpde_loading_location() Holds setting of preferred location.
+ * @uses  ddw_jpde_load_add_ons() Holds setting if add-ons should be loaded too.
+ * @uses  is_admin() Check if we are within admin.
  */
-function ddw_jpde_load_textdomain_file( $moFile, $domain ) {
+function ddw_jpde_translation_loader() {
+	
+	/** Bail early, if no German locale environment */
+	if ( ! ddw_jpde_is_german() ) {
+		return;
+	}
 
-	/** Set textdomain for filter to 'jetpack' */
-	$_is_jetpack_domain = ( $domain == 'jetpack' );
-
-	/** Load stuff only for Jetpack textdomain */
-	if ( $_is_jetpack_domain ) {
-
-		$_is_jetpack = strpos( $moFile, '/jetpack/' ) !== false;
-
-		/** Only if Jetpack is active */
-		if ( $_is_jetpack ) {
-
-			/** Check for formal version */
-			if ( is_readable( trailingslashit( WP_LANG_DIR ) . 'jetpack-de/formal/jetpack-de_DE.mo' ) ) {
-
-				$moFile = trailingslashit( WP_LANG_DIR ) . 'jetpack-de/formal/' . apply_filters( 'jpde_jetpack_formal_locale', 'jetpack-' . get_locale() ) . '.mo';
-
-			}
-
-			/** Then check for custom version */
-			elseif ( is_readable( trailingslashit( WP_LANG_DIR ) . 'jetpack-de/custom/jetpack-de_DE.mo' ) ) {
-
-				$moFile = trailingslashit( WP_LANG_DIR ) . 'jetpack-de/custom/' . apply_filters( 'jpde_jetpack_custom_locale', 'jetpack-' . get_locale() ) . '.mo';
-
-			}
-
-			/** Otherwise load plugin default */
-			else {
-
-				$moFile = trailingslashit( WP_PLUGIN_DIR ) . 'jetpack-de/jp-pomo/' . apply_filters( 'jpde_jetpack_plugin_locale', 'jetpack-' . get_locale() ) . '.mo';
-
-			}  // end-if file checks
-
-		}  // end-if Jetpack check
-
-	}  // end-if textdomain check
+	/** Get plugin general options */
+	$jpde_loading_location = ddw_jpde_loading_location();
+	$jpde_load_add_ons     = ddw_jpde_load_add_ons();
 
 
-	/** Finally, load the translations */
-	if ( file_exists( $moFile ) ) {
+	/** 1) Load translations global - both, frontend & admin */
+	if ( 'both' === $jpde_loading_location ) {
 
-		return $moFile;
+		add_action( 'plugins_loaded', 'ddw_jpde_do_load_translations_jetpack' );
 
-	}  // end-if $moFile check
+		if ( $jpde_load_add_ons ) {
 
-}  // end of function ddw_jpde_load_textdomain_file
+			add_action( 'plugins_loaded', 'ddw_jpde_do_load_translations_jp_thirdparty_addons' );
+
+		}  // end if settings check
+
+	}
+
+		/** 2) Load translations only within admin */
+	elseif ( is_admin() && 'admin_only' === $jpde_loading_location ) {
+
+		add_action( 'plugins_loaded', 'ddw_jpde_do_load_translations_jetpack' );
+
+		if ( $jpde_load_add_ons ) {
+
+			add_action( 'plugins_loaded', 'ddw_jpde_do_load_translations_jp_thirdparty_addons' );
+
+		}  // end if settings check
+
+	}
+
+		/** 3) Load translations only in frontend */
+	elseif ( ! is_admin() && 'frontend_only' === $jpde_loading_location ) {
+
+		add_action( 'plugins_loaded', 'ddw_jpde_do_load_translations_jetpack' );
+
+		if ( $jpde_load_add_ons ) {
+
+			add_action( 'plugins_loaded', 'ddw_jpde_do_load_translations_jp_thirdparty_addons' );
+
+		}  // end if settings check
+
+	}  // end if is_admin() & settings checks
+
+}  // end of function ddw_jpde_translation_loader
 
 
-add_action( 'plugins_loaded', 'ddw_jpde_load_textdomain_fixes' );
 /**
- * To fix textdomain errors in Jetpack, load additional German Jetpack
- *    translations by DECKERWEB.
+ * Load actual translations for Jetpack main plugin.
  *
- * @since 1.4.0
+ * @since 1.7.0
  *
- * @uses  get_locale()
- * @uses  load_textdomain()
+ * @uses  ddw_jpde_load_custom_translations() Load the textdomain(s) for translation.
  */
-function ddw_jpde_load_textdomain_fixes() {
+function ddw_jpde_do_load_translations_jetpack() {
 
-	/** Textdomain: 'share to' */
-	$mofile_shareto = trailingslashit( WP_PLUGIN_DIR ) . 'jetpack-de/jp-pomo/fixes/share-to-' . get_locale() . '.mo';
+	/** Unload packaged translation files */
+	unload_textdomain( 'jetpack' );
 
-	if ( file_exists( $mofile_shareto ) ) {
+	/** Load our custom translations */
+	ddw_jpde_load_custom_translations(
+		array(
+			'jetpack',
+			'default',
+			'nova',
+			'minileven',
+			'next-saturday'
+		),
+		'jetpack'
+	);
 
-		load_textdomain( 'share to', $mofile_shareto );
-
-	}  // end-if $mofile_shareto check
-
-
-	/** Textdomain: 'next-saturday' */
-	$mofile_nextsaturday = trailingslashit( WP_PLUGIN_DIR ) . 'jetpack-de/jp-pomo/fixes/next-saturday-' . get_locale() . '.mo';
-
-	if ( file_exists( $mofile_nextsaturday ) ) {
-
-		load_textdomain( 'next-saturday', $mofile_nextsaturday );
-
-	}  // end-if $mofile_nextsaturday check
+}  // end of function ddw_jpde_do_load_translations_jetpack
 
 
-	/** Textdomain: 'minileven' */
-	$mofile_minileven = trailingslashit( WP_PLUGIN_DIR ) . 'jetpack-de/jp-pomo/fixes/minileven-' . get_locale() . '.mo';
+/**
+ * Load actual translations for some third-party Jetpack add-on plugins.
+ *
+ * @since 1.0.0
+ *
+ * @uses  ddw_jpde_unique_plugin_check() Check for existing plugins (that are active).
+ * @uses  ddw_jpde_load_custom_translations() Load the textdomains for translation.
+ */
+function ddw_jpde_do_load_translations_jp_thirdparty_addons() {
 
-	if ( file_exists( $mofile_minileven ) ) {
+	$jpde_slug_base = 'jetpack-';
 
-		load_textdomain( 'minileven', $mofile_minileven );
+	$jpde_thirdparty_addons = array(
 
-	}  // end-if $mofile_minileven check
+		/** Rocketeer [free] */
+		'rocketeer' => array(
+			'unique_check' => 'Rocketeer',	// class
+			'slug'         => 'rocketeer',
+			'variant'      => 'neutral',
+			'textdomains'  => array(
+				'rocketeer',
+				'default'
+			),
+		),
+
+		/** Jetpack Popular Posts [free] */
+		'jetpack-popular-posts' => array(
+			'unique_check' => 'JPP_Widget',	// class
+			'slug'         => 'jetpack-popular-posts',
+			'variant'      => 'neutral',
+			'textdomains'  => array(
+				'jetpack-popular-posts',
+				'default',
+				'jetpack'
+			),
+		),
+
+		/** Jetpack Post Views [free] */
+		'jetpack-post-views' => array(
+			'unique_check' => 'Jetpack_Post_Views',	// class
+			'slug'         => 'jetpack-post-views',
+			'textdomains'  => array(
+				'jetpack-post-views'
+			),
+		),
+
+	);  // end of array
 
 
-	/** Textdomain: 'default' (none) */
-	$mofile_default = trailingslashit( WP_PLUGIN_DIR ) . 'jetpack-de/jp-pomo/fixes/default-' . get_locale() . '.mo';
+	/** Apply our translation loader for each add-on, if active */
+	foreach ( $jpde_thirdparty_addons as $jpde_tpaddon => $tpaddon_id ) {
 
-	if ( file_exists( $mofile_default ) ) {
+		/** Check for above add-ons if they exist (are active) */
+		if ( ddw_jpde_unique_plugin_check( $tpaddon_id[ 'unique_check' ] ) ) {
 
-		load_textdomain( 'default', $mofile_default );
+			$is_neutral = ( ! isset( $tpaddon_id[ 'variant' ] ) ) ? FALSE : TRUE;
 
-	}  // end-if $mofile_default check
+			/** Actually load the various textdomains for displaying translations */
+			ddw_jpde_load_custom_translations(
+				(array) $tpaddon_id[ 'textdomains' ],
+				$tpaddon_id[ 'slug' ],
+				$is_neutral
+			);
 
-}  // end of function ddw_jpde_load_textdomain_fixes
+		}  // end if
+
+	}  // end foreach
+
+}  // end of function ddw_jpde_do_load_translations_jp_thirdparty_addons
 
 
 /**

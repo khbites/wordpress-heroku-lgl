@@ -14,26 +14,41 @@
  */
 
 /**
+ * Exit if accessed directly
+ *
+ * @since 1.0.0
+ */
+if ( ! defined( 'WPINC' ) ) {
+	exit( 'Sorry, you are not allowed to access this file directly.' );
+}
+
+
+/**
  * Setting internal plugin helper links constants
  *
  * @since 1.0.0
  *
- * @uses  get_locale()
+ * @uses  ddw_jpde_is_german() Our helper function to detect German based environmet.
  */
 define( 'JPDE_URL_TRANSLATE',		'http://translate.wpautobahn.com/projects/wordpress-plugins-deckerweb/jetpack-de' );
-define( 'JPDE_URL_WPORG_FAQ',		'http://wordpress.org/extend/plugins/jetpack-de/faq/' );
+define( 'JPDE_URL_WPORG_FAQ',		'http://wordpress.org/plugins/jetpack-de/faq/' );
 define( 'JPDE_URL_WPORG_FORUM',		'http://wordpress.org/support/plugin/jetpack-de' );
 define( 'JPDE_URL_WPORG_PROFILE',	'http://profiles.wordpress.org/daveshine/' );
 define( 'JPDE_PLUGIN_LICENSE', 		'GPL-2.0+' );
-if ( get_locale() == 'de_DE' || get_locale() == 'de_AT' || get_locale() == 'de_CH' || get_locale() == 'de_LU' ) {
+
+if ( ddw_jpde_is_german() ) {
+
 	define( 'JPDE_URL_DONATE',		'http://deckerweb.de/sprachdateien/spenden/' );
 	define( 'JPDE_URL_PLUGIN',		'http://genesisthemes.de/plugins/jetpack-de/' );
 	define( 'JPDE_IS_GERMAN',		TRUE );
+
 } else {
+
 	define( 'JPDE_URL_DONATE',		'http://genesisthemes.de/en/donate/' );
 	define( 'JPDE_URL_PLUGIN',		'http://genesisthemes.de/en/wp-plugins/jetpack-de/' );
 	define( 'JPDE_IS_GERMAN',		FALSE );
-}
+
+}  // end if
 
 
 /**
@@ -123,10 +138,10 @@ add_action( 'load-edit.php', 'ddw_jpde_jetpack_cpt_load_help', 100 );
  *
  * @since  1.1.0
  *
- * @uses   get_current_screen()
- * @uses   WP_Screen::add_help_tab()
- * @uses   WP_Screen::set_help_sidebar()
- * @uses   ddw_jpde_jetpack_help_sidebar_content()
+ * @uses   get_current_screen() Get current admin screen (hook).
+ * @uses   WP_Screen::add_help_tab() Add help tabs.
+ * @uses   WP_Screen::set_help_sidebar() Set help sidebar.
+ * @uses   ddw_jpde_jetpack_help_sidebar_content() Content for help sidebar.
  *
  * @global mixed $jpde_jetpack_screen, $post
  */
@@ -137,7 +152,15 @@ function ddw_jpde_jetpack_cpt_load_help() {
 	$jpde_jetpack_screen = get_current_screen();
 
 	/** Check for CPT screens */
-	if ( ( 'edit' == $jpde_jetpack_screen->base || 'post' == $jpde_jetpack_screen->base || 'post-new' == $jpde_jetpack_screen->base ) && 'feedback' == $jpde_jetpack_screen->post_type ) {
+	if ( ( 'edit' == $jpde_jetpack_screen->base
+			|| 'post' == $jpde_jetpack_screen->base
+			|| 'post-new' == $jpde_jetpack_screen->base
+		) && ( 'feedback' == $jpde_jetpack_screen->post_type
+				|| 'jetpack-comic' == $jpde_jetpack_screen->post_type
+				|| 'nova_menu_item' == $jpde_jetpack_screen->post_type
+				|| 'jetpack-testimonial' == $jpde_jetpack_screen->post_type
+		)
+	) {
 
 		/** Add the help tab */
 		$jpde_jetpack_screen->add_help_tab( array(
@@ -156,9 +179,10 @@ function ddw_jpde_jetpack_cpt_load_help() {
 
 add_action( 'load-toplevel_page_jetpack', 'ddw_jpde_jetpack_help_tab', 5 );
 add_action( 'load-jetpack_page_stats', 'ddw_jpde_jetpack_help_tab', 5 );
-add_action( 'load-jetpack_page_jetpack-debugger', 'ddw_jpde_jetpack_help_tab', 5 );
 add_action( 'load-jetpack_page_omnisearch', 'ddw_jpde_jetpack_help_tab', 5 );
 add_action( 'load-settings_page_sharing', 'ddw_jpde_jetpack_help_tab', 5 );
+add_action( 'load-jetpack_page_rocketeer', 'ddw_jpde_jetpack_help_tab' );			// Add-On
+add_action( 'load-settings_page_jetpack_post_views', 'ddw_jpde_jetpack_help_tab' );	// Add-On
 /**
  * Create and display plugin help tab.
  *
@@ -203,8 +227,6 @@ function ddw_jpde_jetpack_help_tab() {
  * @since  1.0.0
  *
  * @uses   ddw_jpde_plugin_get_data()
- *
- * @param  $jpde_legal_style
  *
  * @global mixed $jpde_jetpack_screen, $pagenow
  */
@@ -257,23 +279,29 @@ function ddw_jpde_jetpack_help_content() {
 			/** Optional: recommended plugins */
 			if ( ! class_exists( 'CWS_Manual_Control_for_Jetpack_Plugin' ) ) {
 
-				echo '<br />&raquo; <a href="http://wordpress.org/extend/plugins/manual-control/" target="_new" title="Manual Control for Jetpack">Manual Control for Jetpack</a> &mdash; Jetpack aktiviert automatisch neue Module, ohne nach der Berechtigung zu fragen. Dieses Plugin stoppt dieses Verhalten!';
+				echo '<br />&raquo; <a href="http://wordpress.org/plugins/manual-control/" target="_new" title="Manual Control for Jetpack">Manual Control for Jetpack</a> &mdash; Jetpack aktiviert automatisch neue Module, ohne nach der Berechtigung zu fragen. Dieses Plugin stoppt dieses Verhalten!';
+
+			}  // end-if plugin check
+
+			if ( ! class_exists( 'Rocketeer' ) ) {
+
+				echo '<br />&raquo; <a href="http://wordpress.org/plugins/rocketeer/" target="_new" title="Rocketeer">Rocketeer</a> &mdash; Viel übersichtlichere, erweitertete Kontrolle über alle Jetpack Module.';
 
 			}  // end-if plugin check
 
 			if ( ! function_exists( 'fbe_export_to_csv' ) ) {
 
-				echo '<br />&raquo; <a href="http://wordpress.org/extend/plugins/jetpack-feedback-exporter/" target="_new" title="Jetpack Feedback Exporter">Jetpack Feedback Exporter</a> &mdash; Ermöglicht den Export von Jetpack Feedback-Daten (Kontaktformular) als CSV-Datei.';
+				echo '<br />&raquo; <a href="http://wordpress.org/plugins/jetpack-feedback-exporter/" target="_new" title="Jetpack Feedback Exporter">Jetpack Feedback Exporter</a> &mdash; Ermöglicht den Export von Jetpack Feedback-Daten (Kontaktformular) als CSV-Datei.';
 
 			}  // end-if plugin check
 
 			if ( ! function_exists( 'CF7DBPlugin_i18n_init' ) ) {
 
-				echo '<br />&raquo; <a href="http://wordpress.org/extend/plugins/contact-form-7-to-database-extension/" target="_new" title="Jetpack/ Contact Form 7 to Database Extension">Jetpack/ Contact Form 7 to Database Extension</a> &mdash; Speichert Einträge des Jetpack Kontaktformular-Moduls (Feedback) als Datenbank-Daten und macht diese daher exportfähig. Kann mitunter sehr nützlich sein!';
+				echo '<br />&raquo; <a href="http://wordpress.org/plugins/contact-form-7-to-database-extension/" target="_new" title="Jetpack/ Contact Form 7 to Database Extension">Jetpack/ Contact Form 7 to Database Extension</a> &mdash; Speichert Einträge des Jetpack Kontaktformular-Moduls (Feedback) als Datenbank-Daten und macht diese daher exportfähig. Kann mitunter sehr nützlich sein!';
 
 			}  // end-if plugin check
 
-		echo '<br />&raquo; <a href="http://wordpress.org/extend/plugins/search.php?q=jetpack" target="_new" title="' . __( 'More free plugins/extensions at WordPress.org', 'jetpack-german' ) . ' &hellip;">' . __( 'More free plugins/extensions at WordPress.org', 'jetpack-german' ) . ' &hellip;</a></li>' .
+		echo '<br />&raquo; <a href="http://wordpress.org/plugins/search.php?q=jetpack" target="_new" title="' . __( 'More free plugins/extensions at WordPress.org', 'jetpack-german' ) . ' &hellip;">' . __( 'More free plugins/extensions at WordPress.org', 'jetpack-german' ) . ' &hellip;</a></li>' .
 		'</ul>' .
 		'<p><strong>' . __( 'Important plugin links:', 'jetpack-german' ) . '</strong>' . 
 		'<br /><a href="' . esc_url( JPDE_URL_PLUGIN ) . '" target="_new" title="' . __( 'Plugin website', 'jetpack-german' ) . '">' . __( 'Plugin website', 'jetpack-german' ) . '</a> | <a href="' . esc_url( JPDE_URL_WPORG_FAQ ) . '" target="_new" title="' . __( 'FAQ', 'jetpack-german' ) . '">' . __( 'FAQ', 'jetpack-german' ) . '</a> | <a href="' . esc_url( JPDE_URL_WPORG_FORUM ) . '" target="_new" title="' . __( 'Support', 'jetpack-german' ) . '">' . __( 'Support', 'jetpack-german' ) . '</a> | <a href="' . esc_url( JPDE_URL_TRANSLATE ) . '" target="_new" title="' . __( 'Translations', 'jetpack-german' ) . '">' . __( 'Translations', 'jetpack-german' ) . '</a> | <a href="' . esc_url( JPDE_URL_DONATE ) . '" target="_new" title="' . __( 'Donate', 'jetpack-german' ) . '"><strong ' . $jpde_legal_style . '>' . __( 'Donate', 'jetpack-german' ) . '</strong></a>';

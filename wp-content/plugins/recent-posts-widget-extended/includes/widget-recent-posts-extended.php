@@ -1,4 +1,12 @@
 <?php
+/**
+ * The custom recent posts widget. 
+ * This widget gives total control over the output to the user.
+ *
+ * @author    Satrya
+ * @copyright Copyright (c) 2013, Satrya & ThemePhe
+ * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ */
 class rpwe_widget extends WP_Widget {
 
 	/**
@@ -7,17 +15,17 @@ class rpwe_widget extends WP_Widget {
 	function __construct() {
 
 		$widget_ops = array(
-			'classname'		=> 'rpwe_widget recent-posts-extended',
-			'description'	=> __( 'Advanced recent posts widget.', 'rpwe' )
+			'classname'   => 'rpwe_widget recent-posts-extended',
+			'description' => __( 'An advanced widget that gives you total control over the output of your site’s most recent Posts.', 'rpwe' )
 		);
 
 		$control_ops = array(
-			'width'		=> 800,
-			'height'	=> 350,
-			'id_base'	=> 'rpwe_widget'
+			'width'       => 800,
+			'height'      => 350,
+			'id_base'     => 'rpwe_widget'
 		);
 
-		parent::__construct( 'rpwe_widget', __( '&raquo; Recent Posts Widget Extended', 'rpwe' ), $widget_ops, $control_ops );
+		parent::__construct( 'rpwe_widget', __( 'Recent Posts Extended', 'rpwe' ), $widget_ops, $control_ops );
 
 	}
 
@@ -27,55 +35,72 @@ class rpwe_widget extends WP_Widget {
 	function widget( $args, $instance ) {
 		extract( $args, EXTR_SKIP );
 
-		$title 			= apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance, $this->id_base );
-		$title_url		= $instance['title_url'];
-		$cssID 			= $instance['cssID'];
-		$limit 			= (int)( $instance['limit'] );
-		$offset 		= (int)( $instance['offset'] );
-		$order 			= $instance['order'];
-		$excerpt 		= $instance['excerpt'];
-		$length 		= (int)( $instance['length'] );
-		$thumb 			= $instance['thumb'];
-		$thumb_height 	= (int)( $instance['thumb_height'] );
-		$thumb_width 	= (int)( $instance['thumb_width'] );
-		$thumb_default 	= esc_url( $instance['thumb_default'] );
-		$thumb_align 	= $instance['thumb_align'];
-		$cat 			= $instance['cat'];
-		$tag 			= $instance['tag'];
-		$post_type 		= $instance['post_type'];
-		$date 			= $instance['date'];
-		$date_format 	= strip_tags( $instance['date_format'] );
-		$readmore 		= $instance['readmore'];
-		$readmore_text 	= strip_tags( $instance['readmore_text'] );
+		$title          = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance, $this->id_base );
+		$title_url      = esc_url( $instance['title_url'] );
+		$cssID          = $instance['cssID'];
+		$limit          = (int)( $instance['limit'] );
+		$offset         = (int)( $instance['offset'] );
+		$order          = $instance['order'];
+		$orderby        = $instance['orderby'];
+		$excerpt        = $instance['excerpt'];
+		$length         = (int)( $instance['length'] );
+		$thumb          = $instance['thumb'];
+		$thumb_height   = (int)( $instance['thumb_height'] );
+		$thumb_width    = (int)( $instance['thumb_width'] );
+		$thumb_default  = esc_url( $instance['thumb_default'] );
+		$thumb_align    = sanitize_html_class( $instance['thumb_align'] );
+		$cat            = $instance['cat'];
+		$tag            = $instance['tag'];
+		$post_type      = $instance['post_type'];
+		$date           = $instance['date'];
+		$date_format    = strip_tags( $instance['date_format'] );
+		$readmore       = $instance['readmore'];
+		$readmore_text  = strip_tags( $instance['readmore_text'] );
 		$styles_default = $instance['styles_default'];
-		$css 			= $instance['css'];
+		$css            = wp_filter_nohtml_kses( $instance['css'] );
 
 		echo $before_widget;
 
-		if ( $styles_default == true )
+		/* Display the default style of the plugin. */
+		if ( $styles_default == true ) {
 			rpwe_custom_styles();
+		}
 
-		if ( $styles_default == false && ! empty( $css ) )
+		/* If the default style are disable then use the custom css. */
+		if ( $styles_default == false && ! empty( $css ) ) {
 			echo '<style>' . $css . '</style>';
+		}
 
-		if ( ! empty( $title_url ) && ! empty( $title ) )
-			echo $before_title . '<a href="' . esc_url( $title_url ) . '" title="' . $title . '">' . $title . '</a>' . $after_title;
-		elseif ( ! empty( $title ) )
+		/* If both title and title url not empty then display the data. */
+		if ( ! empty( $title_url ) && ! empty( $title ) ) {
+			echo $before_title . '<a href="' . $title_url . '" title="' . esc_attr( $title ) . '">' . $title . '</a>' . $after_title;
+		/* If title not empty and title url empty then display just the title. */
+		} elseif ( ! empty( $title ) ) {
 			echo $before_title . $title . $after_title;
+		}
 
 		global $post;
 
+			/* Set up the query arguments. */
 			$args = array(
-				'numberposts'	=> $limit,
-				'category__in'	=> $cat,
-				'tag__in'		=> $tag,
-				'post_type'		=> $post_type,
-				'offset'		=> $offset,
-				'order'			=> $order
+				'posts_per_page'  => $limit,
+				'category__in'    => $cat,
+				'tag__in'         => $tag,
+				'post_type'       => $post_type,
+				'offset'          => $offset,
+				'order'           => $order,
+				'orderby'         => $orderby
 			);
 
-			$default_args 		= apply_filters( 'rpwe_default_query_arguments', $args ); // Allow developer to filter the query.
-			$rpwewidget 		= get_posts( $default_args );
+			/* Allow developer to filter the query. */
+			$default_args = apply_filters( 'rpwe_default_query_arguments', $args );
+
+			/**
+			 * The main Query
+			 * 
+			 * @link http://codex.wordpress.org/Function_Reference/get_posts
+			 */
+			$rpwewidget = get_posts( $default_args );
 
 		?>
 
@@ -85,36 +110,65 @@ class rpwe_widget extends WP_Widget {
 
 				<?php foreach ( $rpwewidget as $post ) : setup_postdata( $post ); ?>
 
-					<li class="rpwe-clearfix clearfix cl">
+					<li class="rpwe-clearfix">
+						
+						<?php if ( $thumb == true ) { // Check if the thumbnail option enable. ?>
 
-						<?php if ( $thumb == true ) { ?>
+							<?php if ( has_post_thumbnail() ) { // Check If post has post thumbnail. ?>
 
-							<?php if ( has_post_thumbnail() ) { ?>
 								<a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'rpwe' ), the_title_attribute('echo=0' ) ); ?>" rel="bookmark">
-									<?php
-									if ( current_theme_supports( 'get-the-image' ) )
-										get_the_image( array( 'meta_key' => 'Thumbnail', 'height' => $thumb_height, 'width' => $thumb_width, 'image_class' => $thumb_align . ' rpwe-thumb', 'link_to_post' => false ) );
-									else
-										the_post_thumbnail( array( $thumb_height, $thumb_width ), array( 'class' => $thumb_align . ' rpwe-thumb', 'alt' => esc_attr(get_the_title() ), 'title' => esc_attr( get_the_title() ) ) );
-									?>
+									<?php the_post_thumbnail( 
+										array( $thumb_height, $thumb_width, true ),
+										array( 
+											'class' => $thumb_align . ' rpwe-thumb the-post-thumbnail',
+											'alt'   => esc_attr( get_the_title() ),
+											'title' => esc_attr( get_the_title() ) 
+										) 
+									); ?>
 								</a>
-							<?php } else { ?>				
-								<?php if ( $thumb_default ) echo '<a href="' . esc_url( get_permalink() ) . '" rel="bookmark"><img class="' . $thumb_align . ' rpwe-thumb" src="' . $thumb_default . '" alt="' . esc_attr( get_the_title() ) . '"></a>'; ?>
-							<?php } ?>
 
-						<?php } ?>
+							<?php } elseif ( function_exists( 'get_the_image' ) ) { // Check if get-the-image plugin installed and active. ?>
+
+								<?php get_the_image( array( 
+									'height'        => $thumb_height,
+									'width'         => $thumb_width,
+									'size'          => 'rpwe-thumbnail',
+									'image_class'   => $thumb_align . ' rpwe-thumb get-the-image',
+									'image_scan'    => true,
+									'default_image' => $thumb_default
+								) ); ?>
+
+							<?php } elseif ( $thumb_default ) { // Check if the default image not empty. ?>
+
+								<?php 
+								printf( '<a href="%1$s" rel="bookmark"><img class="%2$s rpwe-thumb rpwe-default-thumb" src="%3$s" alt="%4$s" width="%5$s" height="%6$s"></a>',
+									esc_url( get_permalink() ),
+									$thumb_align,
+									$thumb_default,
+									esc_attr( get_the_title() ),
+									$thumb_width,
+									$thumb_height
+								);
+								?>
+
+							<?php } // endif ?>
+
+						<?php } // endif ?>
 
 						<h3 class="rpwe-title">
 							<a href="<?php the_permalink(); ?>" title="<?php printf( esc_attr__( 'Permalink to %s', 'rpwe' ), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a>
 						</h3>
 
-						<?php if ( $date == true ) { ?>
-							<time class="rpwe-time published" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>" pubdate><?php echo esc_html( get_the_date( $date_format ) ); ?></time>
-						<?php } ?>
-
-						<?php if ( $excerpt == true ) { ?>
-							<div class="rpwe-summary"><?php echo rpwe_excerpt( $length ); ?> <?php if ( $readmore == true ) { echo '<a href="' . esc_url( get_permalink() ) . '" class="more-link">' . $readmore_text . '</a>'; } ?></div>
-						<?php } ?>
+						<?php if ( $date == true ) { // Check if the date option enable. ?>
+							<time class="rpwe-time published" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date( $date_format ) ); ?></time>
+						<?php } // endif ?>
+						
+						<?php if ( $excerpt == true ) { // Check if the excerpt option enable. ?>
+							<div class="rpwe-summary">
+								<?php echo rpwe_excerpt( $length ); ?> 
+								<?php if ( $readmore == true ) { echo '<a href="' . esc_url( get_permalink() ) . '" class="more-link">' . $readmore_text . '</a>'; } ?>
+							</div>
+						<?php } // endif ?>
 
 					</li>
 
@@ -122,7 +176,7 @@ class rpwe_widget extends WP_Widget {
 
 			</ul>
 
-		</div><!-- .rpwe-block - http://wordpress.org/extend/plugins/recent-posts-widget-extended/ -->
+		</div><!-- .rpwe-block - http://wordpress.org/plugins/recent-posts-widget-extended/ -->
 
 		<?php
 
@@ -135,29 +189,30 @@ class rpwe_widget extends WP_Widget {
 	 */
 	function update( $new_instance, $old_instance ) {
 
-		$instance 					= $old_instance;
-		$instance['title'] 			= strip_tags( $new_instance['title'] );
-		$instance['title_url'] 		= esc_url_raw( $new_instance['title_url'] );
-		$instance['cssID'] 			= sanitize_html_class( $new_instance['cssID'] );
-		$instance['limit'] 			= (int)( $new_instance['limit'] );
-		$instance['offset'] 		= (int)( $new_instance['offset'] );
-		$instance['order'] 			= $new_instance['order'];
-		$instance['excerpt'] 		= $new_instance['excerpt'];
-		$instance['length'] 		= (int)( $new_instance['length'] );
-		$instance['thumb'] 			= $new_instance['thumb'];
-		$instance['thumb_height'] 	= (int)( $new_instance['thumb_height'] );
-		$instance['thumb_width'] 	= (int)( $new_instance['thumb_width'] );
-		$instance['thumb_default'] 	= esc_url_raw( $new_instance['thumb_default'] );
-		$instance['thumb_align'] 	= $new_instance['thumb_align'];
-		$instance['cat'] 			= $new_instance['cat'];
-		$instance['tag'] 			= $new_instance['tag'];
-		$instance['post_type'] 		= $new_instance['post_type'];
-		$instance['date'] 			= $new_instance['date'];
-		$instance['date_format'] 	= strip_tags( $new_instance['date_format'] );
-		$instance['readmore'] 		= $new_instance['readmore'];
-		$instance['readmore_text'] 	= strip_tags( $new_instance['readmore_text'] );
+		$instance                   = $old_instance;
+		$instance['title']          = strip_tags( $new_instance['title'] );
+		$instance['title_url']      = esc_url_raw( $new_instance['title_url'] );
+		$instance['cssID']          = sanitize_html_class( $new_instance['cssID'] );
+		$instance['limit']          = (int)( $new_instance['limit'] );
+		$instance['offset']         = (int)( $new_instance['offset'] );
+		$instance['order']          = $new_instance['order'];
+		$instance['orderby']        = $new_instance['orderby'];
+		$instance['excerpt']        = $new_instance['excerpt'];
+		$instance['length']         = (int)( $new_instance['length'] );
+		$instance['thumb']          = $new_instance['thumb'];
+		$instance['thumb_height']   = (int)( $new_instance['thumb_height'] );
+		$instance['thumb_width']    = (int)( $new_instance['thumb_width'] );
+		$instance['thumb_default']  = esc_url_raw( $new_instance['thumb_default'] );
+		$instance['thumb_align']    = $new_instance['thumb_align'];
+		$instance['cat']            = $new_instance['cat'];
+		$instance['tag']            = $new_instance['tag'];
+		$instance['post_type']      = $new_instance['post_type'];
+		$instance['date']           = $new_instance['date'];
+		$instance['date_format']    = strip_tags( $new_instance['date_format'] );
+		$instance['readmore']       = $new_instance['readmore'];
+		$instance['readmore_text']  = strip_tags( $new_instance['readmore_text'] );
 		$instance['styles_default'] = $new_instance['styles_default'];
-		$instance['css'] 			= $new_instance['css'];
+		$instance['css']            = wp_filter_nohtml_kses( $new_instance['css'] );
 
 		return $instance;
 
@@ -168,57 +223,60 @@ class rpwe_widget extends WP_Widget {
 	 */
 	function form( $instance ) {
 
+		/* Output widget selector. */
 		$css_defaults = ".rpwe-block ul{\n}\n\n.rpwe-block li{\n}\n\n.rpwe-block a{\n}\n\n.rpwe-block h3{\n}\n\n.rpwe-thumb{\n}\n\n.rpwe-summary{\n}\n\n.rpwe-time{\n}\n\n.rpwe-alignleft{\n}\n\n.rpwe-alignright{\n}\n\n.rpwe-alignnone{\n}\n\n.rpwe-clearfix:before,\n.rpwe-clearfix:after{\ncontent: \"\";\ndisplay: table;\n}\n\n.rpwe-clearfix:after{\nclear:both;\n}\n\n.rpwe-clearfix{\nzoom: 1;\n}";
 
 		/* Set up some default widget settings. */
 		$defaults = array(
-			'title' 		=> '',
-			'title_url' 	=> '',
-			'cssID' 		=> '',
-			'limit' 		=> 5,
-			'offset' 		=> 0,
-			'order' 		=> 'DESC',
-			'excerpt' 		=> false,
-			'length' 		=> 10,
-			'thumb' 		=> true,
-			'thumb_height' 	=> 45,
-			'thumb_width' 	=> 45,
-			'thumb_default' => 'http://placehold.it/45x45/f0f0f0/ccc',
-			'thumb_align' 	=> 'rpwe-alignleft',
-			'cat' 			=> '',
-			'tag' 			=> '',
-			'post_type' 	=> '',
-			'date' 			=> true,
-			'date_format' 	=> 'F, Y',
-			'readmore' 		=> false,
-			'readmore_text'	=> __( 'Read More &raquo;', 'rpwe' ),
-			'styles_default'=> true,
-			'css' 			=> $css_defaults
+			'title'          => '',
+			'title_url'      => '',
+			'cssID'          => '',
+			'limit'          => 5,
+			'offset'         => 0,
+			'order'          => 'DESC',
+			'orderby'        => 'date',
+			'excerpt'        => false,
+			'length'         => 10,
+			'thumb'          => true,
+			'thumb_height'   => 45,
+			'thumb_width'    => 45,
+			'thumb_default'  => 'http://placehold.it/45x45/f0f0f0/ccc',
+			'thumb_align'    => 'rpwe-alignleft',
+			'cat'            => '',
+			'tag'            => '',
+			'post_type'      => '',
+			'date'           => true,
+			'date_format'    => 'F j, Y',
+			'readmore'       => false,
+			'readmore_text'  => __( 'Read More &raquo;', 'rpwe' ),
+			'styles_default' => true,
+			'css'            => $css_defaults
 		);
 
-		$instance 		= wp_parse_args( (array)$instance, $defaults );
-		$title 			= strip_tags( $instance['title'] );
-		$title_url 		= esc_url( $instance['title_url'] );
-		$cssID 			= sanitize_html_class( $instance['cssID'] );
-		$limit 			= (int)( $instance['limit'] );
-		$offset 		= (int)( $instance['offset'] );
-		$order 			= $instance['order'];
-		$excerpt 		= $instance['excerpt'];
-		$length 		= (int)($instance['length']);
-		$thumb 			= $instance['thumb'];
-		$thumb_height 	= (int)( $instance['thumb_height'] );
-		$thumb_width 	= (int)( $instance['thumb_width'] );
-		$thumb_default 	= $instance['thumb_default'];
-		$thumb_align 	= $instance['thumb_align'];
-		$cat 			= $instance['cat'];
-		$tag 			= $instance['tag'];
-		$post_type 		= $instance['post_type'];
-		$date 			= $instance['date'];
-		$date_format 	= strip_tags( $instance['date_format'] );
-		$readmore 		= $instance['readmore'];
-		$readmore_text 	= strip_tags( $instance['readmore_text'] );
-		$styles_default	= $instance['styles_default'];
-		$css 			= $instance['css'];
+		$instance       = wp_parse_args( (array)$instance, $defaults );
+		$title          = strip_tags( $instance['title'] );
+		$title_url      = esc_url( $instance['title_url'] );
+		$cssID          = sanitize_html_class( $instance['cssID'] );
+		$limit          = (int)( $instance['limit'] );
+		$offset         = (int)( $instance['offset'] );
+		$order          = $instance['order'];
+		$orderby        = $instance['orderby'];
+		$excerpt        = $instance['excerpt'];
+		$length         = (int)($instance['length']);
+		$thumb          = $instance['thumb'];
+		$thumb_height   = (int)( $instance['thumb_height'] );
+		$thumb_width    = (int)( $instance['thumb_width'] );
+		$thumb_default  = $instance['thumb_default'];
+		$thumb_align    = $instance['thumb_align'];
+		$cat            = $instance['cat'];
+		$tag            = $instance['tag'];
+		$post_type      = $instance['post_type'];
+		$date           = $instance['date'];
+		$date_format    = strip_tags( $instance['date_format'] );
+		$readmore       = $instance['readmore'];
+		$readmore_text  = strip_tags( $instance['readmore_text'] );
+		$styles_default = $instance['styles_default'];
+		$css            = wp_filter_nohtml_kses( $instance['css'] );
 
 		?>
 
@@ -266,6 +324,19 @@ class rpwe_widget extends WP_Widget {
 				</select>
 			</p>
 			<p>
+				<label for="<?php echo esc_attr( $this->get_field_id( 'orderby' ) ); ?>"><?php _e( 'Orderby:', 'rpwe' ); ?></label>
+				<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'orderby' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'orderby' ) ); ?>" style="width:100%;">
+					<option value="ID" <?php selected( $orderby, 'ID' ); ?>><?php _e( 'ID', 'rpwe' ) ?></option>
+					<option value="author" <?php selected( $orderby, 'author' ); ?>><?php _e( 'Author', 'rpwe' ) ?></option>
+					<option value="title" <?php selected( $orderby, 'title' ); ?>><?php _e( 'Title', 'rpwe' ) ?></option>
+					<option value="date" <?php selected( $orderby, 'date' ); ?>><?php _e( 'Date', 'rpwe' ) ?></option>
+					<option value="modified" <?php selected( $orderby, 'modified' ); ?>><?php _e( 'Modified', 'rpwe' ) ?></option>
+					<option value="rand" <?php selected( $orderby, 'rand' ); ?>><?php _e( 'Random', 'rpwe' ) ?></option>
+					<option value="comment_count" <?php selected( $orderby, 'comment_count' ); ?>><?php _e( 'Comment Count', 'rpwe' ) ?></option>
+					<option value="menu_order" <?php selected( $orderby, 'menu_order' ); ?>><?php _e( 'Menu Order', 'rpwe' ) ?></option>
+				</select>
+			</p>
+			<p>
 				<label for="<?php echo esc_attr( $this->get_field_id( 'cat' ) ); ?>"><?php _e( 'Limit to Category: ', 'rpwe' ); ?></label>
 			   	<select class="widefat" multiple="multiple" id="<?php echo esc_attr( $this->get_field_id( 'cat' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'cat' ) ); ?>[]" style="width:100%;">
 					<optgroup label="Categories">
@@ -292,7 +363,7 @@ class rpwe_widget extends WP_Widget {
 				<label for="<?php echo esc_attr( $this->get_field_id( 'post_type' ) ); ?>"><?php _e( 'Choose the Post Type: ', 'rpwe' ); ?></label>
 				<?php /* pros Justin Tadlock - http://themehybrid.com/ */ ?>
 				<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'post_type' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'post_type' ) ); ?>">
-					<?php foreach ( get_post_types( '', 'objects' ) as $post_type ) { ?>
+					<?php foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) { ?>
 						<option value="<?php echo esc_attr( $post_type->name ); ?>" <?php selected( $instance['post_type'], $post_type->name ); ?>><?php echo esc_html( $post_type->labels->singular_name ); ?></option>
 					<?php } ?>
 				</select>
@@ -362,9 +433,10 @@ class rpwe_widget extends WP_Widget {
 }
 
 /**
- * Register widget.
+ * Register the widget.
  *
  * @since 0.1
+ * @link  http://codex.wordpress.org/Function_Reference/register_widget
  */
 function rpwe_register_widget() {
 	register_widget( 'rpwe_widget' );
@@ -373,23 +445,17 @@ add_action( 'widgets_init', 'rpwe_register_widget' );
 
 /**
  * Print a custom excerpt.
- * http://bavotasan.com/2009/limiting-the-number-of-words-in-your-excerpt-or-content-in-wordpress/
+ * Code revision in version 0.9, uses wp_trim_words function
  *
- * @since 0.1
+ * @since    0.1
+ * @version  0.9
+ * @link     http://codex.wordpress.org/Function_Reference/wp_trim_words
  */
 function rpwe_excerpt( $length ) {
-
-	$excerpt = explode( ' ', get_the_excerpt(), $length );
-	if ( count( $excerpt ) >= $length ) {
-		array_pop( $excerpt );
-		$excerpt = implode( " ", $excerpt );
-	} else {
-		$excerpt = implode( " ", $excerpt );
-	}
-	$excerpt = preg_replace( '`\[[^\]]*\]`', '', $excerpt );
+	$content = get_the_excerpt();
+	$excerpt = wp_trim_words( $content, $length );
 
 	return $excerpt;
-
 }
 
 /**
@@ -400,7 +466,7 @@ function rpwe_excerpt( $length ) {
 function rpwe_custom_styles() {
 	?>
 <style>
-.rpwe-block ul{list-style:none!important;margin-left:0!important;padding-left:0!important;}.rpwe-block li{border-bottom:1px solid #eee;margin-bottom:10px;padding-bottom:10px;}.rpwe-block a{display:inline!important;text-decoration:none;}.rpwe-block h3{background:none!important;clear:none;margin-bottom:0!important;font-weight:400;font-size:12px!important;line-height:1.5em;}.rpwe-thumb{border:1px solid #EEE!important;box-shadow:none!important;margin:2px 10px 2px 0;padding:3px!important;}.rpwe-summary{font-size:12px;}.rpwe-time{color:#bbb;font-size:11px;}.rpwe-alignleft{display:inline;float:left;}.rpwe-alignright{display:inline;float:right;}.rpwe-alignnone{display:block;float:none;}.rpwe-clearfix:before,.rpwe-clearfix:after{content:"";display:table;}.rpwe-clearfix:after{clear:both;}.rpwe-clearfix{zoom:1;}
+.rpwe-block ul{list-style:none!important;margin-left:0!important;padding-left:0!important;}.rpwe-block li{border-bottom:1px solid #eee;margin-bottom:10px;padding-bottom:10px;list-style-type: none;}.rpwe-block a{display:inline!important;text-decoration:none;}.rpwe-block h3{background:none!important;clear:none;margin-bottom:0!important;margin-top:0!important;font-weight:400;font-size:12px!important;line-height:1.5em;}.rpwe-thumb{border:1px solid #EEE!important;box-shadow:none!important;margin:2px 10px 2px 0;padding:3px!important;}.rpwe-summary{font-size:12px;}.rpwe-time{color:#bbb;font-size:11px;}.rpwe-alignleft{display:inline;float:left;}.rpwe-alignright{display:inline;float:right;}.rpwe-alignnone{display:block;float:none;}.rpwe-clearfix:before,.rpwe-clearfix:after{content:"";display:table !important;}.rpwe-clearfix:after{clear:both;}.rpwe-clearfix{zoom:1;}
 </style>
 	<?php
 }

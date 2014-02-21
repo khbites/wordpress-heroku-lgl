@@ -6,11 +6,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Jetpack German (de_DE) v1.5.1\n"
+"Project-Id-Version: Jetpack German (de_DE) v1.7.0\n"
 "Report-Msgid-Bugs-To: http://deckerweb.de/kontakt/\n"
 "POT-Creation-Date: 2012-10-30 10:28:06+0100\n"
-"PO-Revision-Date: 2013-09-05 00:08+0100\n"
-"Last-Translator: David Decker <http://deckerweb.de/kontakt/>\n"
+"PO-Revision-Date: 2013-12-15 18:08+0100\n"
+"Last-Translator: David Decker -- http://deckerweb.de/kontakt/\n"
 "Language-Team: DECKERWEB -- http://deckerweb.de/kontakt/\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -105,13 +105,8 @@ msgstr "http://genesisthemes.de/plugins/jetpack-de/"
 # @ jetpack-german
 #. translators: plugin header field 'Description'
 #: jetpack-de.php:0
-msgid ""
-"Use Jetpack with proper German translations. Approved for client usage. "
-"Jetpack endlich in vernünftigem Deutsch. Kliententauglich."
-msgstr ""
-"Jetpack endlich komplett übersetzt in vernünftigem Deutsch. "
-"Kliententauglich. &mdash; Auf Wunsch auch SIE-Version möglich bzw. eigene "
-"Sprachdatei, Update-sicher."
+msgid "Use Jetpack with proper German translations. Approved for client usage. Jetpack endlich in vernünftigem Deutsch. Kliententauglich."
+msgstr "Jetpack endlich komplett übersetzt in vernünftigem Deutsch. Kliententauglich. &mdash; Auf Wunsch auch SIE-Version möglich bzw. eigene Sprachdatei, Update-sicher."
 
 # @ jetpack-german
 #. translators: plugin header field 'Author'
@@ -128,5 +123,5 @@ msgstr "http://deckerweb.de/"
 # @ jetpack-german
 #. translators: plugin header field 'Version'
 #: jetpack-de.php:0
-msgid "1.6.0"
-msgstr "1.6.0"
+msgid "1.7.0"
+msgstr "1.7.0"
