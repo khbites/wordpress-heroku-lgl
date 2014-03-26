@@ -4,7 +4,7 @@ Donate link: http://dannyvankooten.com/donate/
 Tags: mailchimp,form,shortcode,widget,checkbox,comment,newsletter,buddypress,multisite,bbpress,woocommerce,easy digital downloads,contact form,contact form 7
 Requires at least: 3.1
 Tested up to: 3.8.1
-Stable tag: 1.5.4
+Stable tag: 1.5.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -195,12 +195,39 @@ Your theme folder can be found by browsing to `/wp-content/themes/your-theme-nam
 7. **Pro only:** Gain valuable insights which method your visitors used to subscribe for any given time period using beautiful line charts.
 8. **Pro only:** Create your own CSS styles with the form designer in the Pro version.
 
-
 == Changelog ==
+
+= 1.5.7 - March 18, 2014 =
+**Fixes**
+
+- Fixed special characters in group names not working
+- Fixed BIRTHDAY field format (mm/dd)
+
+**Improvements**
+
+- Moved away from Singleton pattern
+- Added a code version number for upgrade routines
+- Better class documentation
+- MailChimp cached data improvements. Now showing subscriber count.
+- Base form CSS improvements, added vertical-align to field elements and removed padding from paragraph elements.
+- Updated Placeholders.js for old IE versions
+
+= 1.5.6 - March 13, 2014 =
+* Fixed: Honeypot textarea showing in some themes
+* Improved: Plugin will automatically strip duplicate `<form>` tags from form mark-up
+* Improved: Better code documentation
+* Improved: Code is now more adhering to WP code standards
+* Improved: Add custom error type to error message filter to allow developers to show custom error messages
+* Improved: Plugin will now show detailed errors for failed API requests (up to HTTP level)
+* Improved: Better way of loading plugin files
+
+= 1.5.5 - February 25, 2014 =
+* Fixed: Field generator only generating text fields
+* Fixed: Now using correct deactivation hook
+* Improved: Plugin now fully compatible with custom folder names
 
 = 1.5.4 - February 17, 2014 =
 * Fixed: "Add to form" button not working
-* Improved: Plugin now compatible with custom plugin folder names
 
 = 1.5.3 - February 16, 2014 =
 * Fixed: Undefined constant notice on admin pages
@@ -458,6 +485,12 @@ Your theme folder can be found by browsing to `/wp-content/themes/your-theme-nam
 * BETA release
 
 == Upgrade Notice ==
+
+= 1.5.7 =
+Minor improvements and small bug fixes.
+
+= 1.5.5 =
+Fixed field generator only generating `text` input fields.
 
 = 1.5.4 =
 Fixed admin notice and "add to form" button, improved Contact Form 7 integration.
