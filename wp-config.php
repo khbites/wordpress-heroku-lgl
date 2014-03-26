@@ -23,7 +23,6 @@ $db = parse_url($_SERVER["DATABASE_URL"]);
 // ** Disable Automatic Updates (3.7 an onwards) **/
 define( 'AUTOMATIC_UPDATER_DISABLED', true );
 
-
 //** Disable wp-cron.php Call on EVERY Page Load for speed ** //
 //** I call wp-cron via wget from a remote host (in crontab)
 //   You can also setup a scheduler in heroku
