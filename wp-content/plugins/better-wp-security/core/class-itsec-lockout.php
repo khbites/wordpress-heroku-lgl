@@ -121,41 +121,11 @@ final class ITSEC_Lockout {
 		$lock_user = null;
 		$options   = $this->lockout_modules[$module];
 
-		if ( isset( $options['host'] ) && $options['host'] > 0 ) {
+		$host = ITSEC_Lib::get_ip();
 
-			$host = ITSEC_Lib::get_ip();
+		if ( ! $this->is_ip_whitelisted( $host ) ) {
 
-			$wpdb->insert(
-			     $wpdb->base_prefix . 'itsec_temp',
-			     array(
-				     'temp_type'     => $options['type'],
-				     'temp_date'     => date( 'Y-m-d H:i:s', $itsec_globals['current_time'] ),
-				     'temp_date_gmt' => date( 'Y-m-d H:i:s', $itsec_globals['current_time_gmt'] ),
-				     'temp_host'     => $host,
-			     )
-			);
-
-			$host_count = $wpdb->get_var(
-			                   $wpdb->prepare(
-			                        "SELECT COUNT(*) FROM `" . $wpdb->base_prefix . "itsec_temp` WHERE `temp_date_gmt` > '%s' AND `temp_host`='%s';",
-			                        date( 'Y-m-d H:i:s', $itsec_globals['current_time_gmt'] - ( $options['period'] * 60 ) ),
-			                        $host
-			                   )
-			);
-
-			if ( $host_count >= $options['host'] ) {
-
-				$lock_host = $host;
-
-			}
-
-		}
-
-		if ( $user !== null && isset( $options['user'] ) && $options['user'] > 0 ) {
-
-			$user_id = username_exists( sanitize_text_field( $user ) );
-
-			if ( $user_id !== null ) {
+			if ( isset( $options['host'] ) && $options['host'] > 0 ) {
 
 				$wpdb->insert(
 				     $wpdb->base_prefix . 'itsec_temp',
@@ -163,30 +133,64 @@ final class ITSEC_Lockout {
 					     'temp_type'     => $options['type'],
 					     'temp_date'     => date( 'Y-m-d H:i:s', $itsec_globals['current_time'] ),
 					     'temp_date_gmt' => date( 'Y-m-d H:i:s', $itsec_globals['current_time_gmt'] ),
-					     'temp_user'     => intval( $user_id ),
+					     'temp_host'     => $host,
 				     )
 				);
 
-				$user_count = $wpdb->get_var(
+				$host_count = $wpdb->get_var(
 				                   $wpdb->prepare(
-				                        "SELECT COUNT(*) FROM `" . $wpdb->base_prefix . "itsec_temp` WHERE `temp_date_gmt` > '%s' AND `temp_user`=%s;",
+				                        "SELECT COUNT(*) FROM `" . $wpdb->base_prefix . "itsec_temp` WHERE `temp_date_gmt` > '%s' AND `temp_host`='%s';",
 				                        date( 'Y-m-d H:i:s', $itsec_globals['current_time_gmt'] - ( $options['period'] * 60 ) ),
-				                        $user_id
+				                        $host
 				                   )
 				);
 
-				if ( $user_count >= $options['user'] ) {
+				if ( $host_count >= $options['host'] ) {
 
-					$lock_user = $user_id;
+					$lock_host = $host;
 
 				}
 
 			}
 
-		}
+			if ( $user !== null && isset( $options['user'] ) && $options['user'] > 0 ) {
 
-		if ( ( $lock_host !== null || $lock_user !== null ) ) {
-			$this->lockout( $options['type'], $options['reason'], $lock_host, $lock_user );
+				$user_id = username_exists( sanitize_text_field( $user ) );
+
+				if ( $user_id !== null ) {
+
+					$wpdb->insert(
+					     $wpdb->base_prefix . 'itsec_temp',
+					     array(
+						     'temp_type'     => $options['type'],
+						     'temp_date'     => date( 'Y-m-d H:i:s', $itsec_globals['current_time'] ),
+						     'temp_date_gmt' => date( 'Y-m-d H:i:s', $itsec_globals['current_time_gmt'] ),
+						     'temp_user'     => intval( $user_id ),
+					     )
+					);
+
+					$user_count = $wpdb->get_var(
+					                   $wpdb->prepare(
+					                        "SELECT COUNT(*) FROM `" . $wpdb->base_prefix . "itsec_temp` WHERE `temp_date_gmt` > '%s' AND `temp_user`=%s;",
+					                        date( 'Y-m-d H:i:s', $itsec_globals['current_time_gmt'] - ( $options['period'] * 60 ) ),
+					                        $user_id
+					                   )
+					);
+
+					if ( $user_count >= $options['user'] ) {
+
+						$lock_user = $user_id;
+
+					}
+
+				}
+
+			}
+
+			if ( ( $lock_host !== null || $lock_user !== null ) ) {
+				$this->lockout( $options['type'], $options['reason'], $lock_host, $lock_user );
+			}
+
 		}
 
 	}
@@ -332,56 +336,60 @@ final class ITSEC_Lockout {
 			$white_ips[] = ITSEC_Lib::get_ip(); //add current user ip to whitelist to check automatically
 		}
 
-		foreach ( $white_ips as $white_ip ) {
+		if ( is_array( $white_ips ) && sizeof( $white_ips > 0 ) ) {
 
-			$converted_white_ip = ITSEC_Lib::ip_wild_to_mask( $white_ip );
+			foreach ( $white_ips as $white_ip ) {
 
-			$check_range = ITSEC_Lib::cidr_to_range( $converted_white_ip );
-			$ip_range    = ITSEC_Lib::cidr_to_range( $ip_to_check );
+				$converted_white_ip = ITSEC_Lib::ip_wild_to_mask( $white_ip );
 
-			if ( sizeof( $check_range ) === 2 ) { //range to check
+				$check_range = ITSEC_Lib::cidr_to_range( $converted_white_ip );
+				$ip_range    = ITSEC_Lib::cidr_to_range( $ip_to_check );
 
-				$check_min = ip2long( $check_range[0] );
-				$check_max = ip2long( $check_range[1] );
+				if ( sizeof( $check_range ) === 2 ) { //range to check
 
-				if ( sizeof( $ip_range ) === 2 ) {
+					$check_min = ip2long( $check_range[0] );
+					$check_max = ip2long( $check_range[1] );
 
-					$ip_min = ip2long( $ip_range[0] );
-					$ip_max = ip2long( $ip_range[1] );
+					if ( sizeof( $ip_range ) === 2 ) {
 
-					if ( ( $check_min < $ip_min && $ip_min < $check_max ) || ( $check_min < $ip_max && $ip_max < $check_max ) ) {
-						return true;
+						$ip_min = ip2long( $ip_range[0] );
+						$ip_max = ip2long( $ip_range[1] );
+
+						if ( ( $check_min < $ip_min && $ip_min < $check_max ) || ( $check_min < $ip_max && $ip_max < $check_max ) ) {
+							return true;
+						}
+
+					} else {
+
+						$ip = ip2long( $ip_range[0] );
+
+						if ( $check_min < $ip && $ip < $check_max ) {
+							return true;
+						}
+
 					}
 
-				} else {
+				} else { //single ip to check
 
-					$ip = ip2long( $ip_range[0] );
+					$check = ip2long( $check_range[0] );
 
-					if ( $check_min < $ip && $ip < $check_max ) {
-						return true;
-					}
+					if ( sizeof( $ip_range ) === 2 ) {
 
-				}
+						$ip_min = ip2long( $ip_range[0] );
+						$ip_max = ip2long( $ip_range[1] );
 
-			} else { //single ip to check
+						if ( $ip_min < $check && $check < $ip_max ) {
+							return true;
+						}
 
-				$check = ip2long( $check_range[0] );
+					} else {
 
-				if ( sizeof( $ip_range ) === 2 ) {
+						$ip = ip2long( $ip_range[0] );
 
-					$ip_min = ip2long( $ip_range[0] );
-					$ip_max = ip2long( $ip_range[1] );
+						if ( $check == $ip ) {
+							return true;
+						}
 
-					if ( $ip_min < $check && $check < $ip_max ) {
-						return true;
-					}
-
-				} else {
-
-					$ip = ip2long( $ip_range[0] );
-
-					if ( $check == $ip ) {
-						return true;
 					}
 
 				}
@@ -437,13 +445,13 @@ final class ITSEC_Lockout {
 
 				$blacklist_period = isset( $itsec_globals['settings']['blacklist_period'] ) ? $itsec_globals['settings']['blacklist_period'] * 24 * 60 * 60 : 604800;
 
-				$host_count = $wpdb->get_var(
-				                   $wpdb->prepare(
-				                        "SELECT COUNT(*) FROM `" . $wpdb->base_prefix . "itsec_lockouts` WHERE `lockout_expire_gmt` > '%s' AND `lockout_host`='%s';",
-				                        date( 'Y-m-d H:i:s', $itsec_globals['current_time_gmt'] + $blacklist_period ),
-				                        $host
-				                   )
-				);
+				$host_count = 1 + $wpdb->get_var(
+				                       $wpdb->prepare(
+				                            "SELECT COUNT(*) FROM `" . $wpdb->base_prefix . "itsec_lockouts` WHERE `lockout_expire_gmt` > '%s' AND `lockout_host`='%s';",
+				                            date( 'Y-m-d H:i:s', $itsec_globals['current_time_gmt'] + $blacklist_period ),
+				                            $host
+				                       )
+					);
 
 				if ( $host_count >= $itsec_globals['settings']['blacklist_count'] && isset( $itsec_globals['settings']['write_files'] ) && $itsec_globals['settings']['write_files'] === true ) {
 
@@ -833,7 +841,7 @@ final class ITSEC_Lockout {
 			__( 'This email was generated automatically by' ),
 			$itsec_globals['plugin_name'],
 			__( 'To change your email preferences please visit', 'it-l10n-better-wp-security' ),
-			get_Admin_url( '', 'admin.php?page=toplevel_page_itsec-global' ),
+			get_Admin_url( '', 'admin.php?page=toplevel_page_itsec_settings' ),
 			__( 'the plugin settings', 'it-l10n-better-wp-security' ) );
 
 		//Setup the remainder of the email

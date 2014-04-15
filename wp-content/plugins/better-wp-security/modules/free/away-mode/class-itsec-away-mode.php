@@ -3,8 +3,8 @@
 class ITSEC_Away_Mode {
 
 	private
-	$settings,
-	$away_file;
+		$settings,
+		$away_file;
 
 	function __construct() {
 
@@ -23,8 +23,10 @@ class ITSEC_Away_Mode {
 	/**
 	 * Check if away mode is active
 	 *
-	 * @param bool    $forms [false] Whether the call comes from the same options form
-	 * @param array   @input[NULL] Input of options to check if calling from form
+	 * @since 4.0
+	 *
+	 * @param bool  $form  [false] Whether the call comes from the same options form
+	 * @param array $input [NULL] Input of options to check if calling from form
 	 *
 	 * @return bool true if locked out else false
 	 */
@@ -46,62 +48,36 @@ class ITSEC_Away_Mode {
 
 		}
 
-		$transaway = get_site_transient( 'itsec_away' );
+		$current_time  = $itsec_globals['current_time'];
+		$has_away_file = @file_exists( $this->away_file );
 
-		//if transient indicates away go ahead and lock them out
-		if ( $form === false && $transaway === true && file_exists( $this->away_file ) ) {
+		if ( 1 == $test_type ) { //daily
+
+			$test_start -= strtotime( date( 'Y-m-d', $test_start ) );
+			$test_end -= strtotime( date( 'Y-m-d', $test_end ) );
+			$day_seconds = $current_time - strtotime( date( 'Y-m-d', $current_time ) );
+
+			if ( $test_start === $test_end ) {
+				return false;
+			}
+
+			if ( $test_start < $test_end ) { //same day
+
+				if ( $test_start <= $day_seconds && $test_end >= $day_seconds && ( $form === true || ( $this->settings['enabled'] === true && $has_away_file ) ) ) {
+					return true;
+				}
+
+			} else { //overnight
+
+				if ( ( $test_start < $day_seconds || $test_end > $day_seconds ) && ( $form === true || ( $this->settings['enabled'] === true && $has_away_file ) ) ) {
+					return true;
+				}
+
+			}
+
+		} else if ( $test_start !== $test_end && $test_start <= $current_time && $test_end >= $current_time && ( $form === true || ( $this->settings['enabled'] === true && $has_away_file ) ) ) { //one time
 
 			return true;
-
-		} else { //check manually
-
-			$current_time = $itsec_globals['current_time'];
-
-			if ( $test_type == 1 ) { //set up for daily
-
-				$start = strtotime( date( 'n/j/y', $current_time ) . ' ' . date( 'g:i a', $test_start ) );
-				$end   = strtotime( date( 'n/j/y', $current_time ) . ' ' . date( 'g:i a', $test_end ) );
-
-				$overnight = false;
-
-				if ( $current_time > $end && $start > $end ) {
-
-					$overnight = true;
-
-					$end = $end + 86400;
-
-				}
-
-				if ( $overnight === true && $current_time < $start ) {
-
-					$start = $start - 86400;
-
-				}
-
-			} else { //one time settings
-
-				$start = $test_start;
-				$end   = $test_end;
-
-			}
-
-			$remaining = $end - $current_time;
-
-			if ( $start <= $current_time && $end >= $current_time && ( $form === true || ( $this->settings['enabled'] === true && @file_exists( $this->away_file ) ) ) ) { //if away mode is enabled continue
-
-				if ( $form === false ) {
-
-					if ( get_site_transient( 'itsec_away' ) === true ) {
-						delete_site_transient( 'itsec_away' );
-					}
-
-					set_site_transient( 'itsec_away', true, $remaining );
-
-				}
-
-				return true; //time restriction is current
-
-			}
 
 		}
 

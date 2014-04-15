@@ -171,7 +171,7 @@ class ITSEC_Database_Prefix_Admin {
 
 				<p class="submit">
 					<input type="submit" class="button-primary"
-					       value="<?php _e( 'Save Changes', 'it-l10n-better-wp-security' ); ?>"/>
+					       value="<?php _e( 'Change Database Prefix', 'it-l10n-better-wp-security' ); ?>"/>
 				</p>
 			</form>
 

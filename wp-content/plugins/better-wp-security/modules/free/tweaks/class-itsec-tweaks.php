@@ -23,6 +23,14 @@ class ITSEC_Tweaks {
 			remove_action( 'wp_head', 'rsd_link' );
 		}
 
+		if ( isset( $this->settings['disable_xmlrpc'] ) && $this->settings['disable_xmlrpc'] == 2 ) {
+			add_filter( 'bloginfo_url', array( $this, 'remove_pingback_url' ), 10, 2 );
+		}
+
+		if ( isset( $this->settings['disable_xmlrpc'] ) && $this->settings['disable_xmlrpc'] == 1 ) {
+			add_filter( 'xmlrpc_methods', array( $this, 'xmlrpc_methods' ) );
+		}
+
 		//ban extra-long urls if turned on
 		if ( ( ! isset( $itsec_globals['is_iwp_call'] ) || $itsec_globals['is_iwp_call'] === false ) && isset( $this->settings['long_url_strings'] ) && $this->settings['long_url_strings'] == true && ! is_admin() ) {
 
@@ -91,7 +99,9 @@ class ITSEC_Tweaks {
 
 	public function current_jquery() {
 
-		if ( ! is_admin() ) {
+		global $itsec_is_old_admin;
+
+		if ( ! is_admin() && ! $itsec_is_old_admin ) {
 
 			wp_deregister_script( 'jquery' );
 			wp_deregister_script( 'jquery-core' );
@@ -162,6 +172,8 @@ class ITSEC_Tweaks {
 	 */
 	public function force_unique_nicename( &$errors, $update, &$user ) {
 
+		$display_name = isset( $user->display_name ) ? $user->display_name : ITSEC_Lib::get_random( 14 );
+
 		if ( ! empty( $user->nickname ) ) {
 
 			if ( $user->nickname == $user->user_login ) {
@@ -170,7 +182,7 @@ class ITSEC_Tweaks {
 
 			} else {
 
-				$user->user_nicename = sanitize_title( $user->nickname, $user->display_name );
+				$user->user_nicename = sanitize_title( $user->nickname, $display_name );
 
 			}
 
@@ -180,7 +192,7 @@ class ITSEC_Tweaks {
 
 			$user->nickname = $full_name;
 
-			$user->user_nicename = sanitize_title( $full_name, $user->display_name );
+			$user->user_nicename = sanitize_title( $full_name, $display_name );
 
 		} else {
 
@@ -257,6 +269,23 @@ class ITSEC_Tweaks {
 	}
 
 	/**
+	 * Removes the pingback header
+	 *
+	 * @param string $output
+	 * @param string $show
+	 *
+	 * @return array
+	 */
+	function remove_pingback_url( $output, $show ) {
+
+		if ( $show == 'pingback_url' ) {
+			$output = '';
+		}
+
+		return $output;
+	}
+
+	/**
 	 * removes version number on header scripts
 	 *
 	 * @param string $src script source link
@@ -287,6 +316,29 @@ class ITSEC_Tweaks {
 			wp_clear_scheduled_hook( 'wp_update_themes' );
 
 		}
+
+	}
+
+	/**
+	 * Removes the pingback ability from XMLRPC
+	 *
+	 * @since 4.0.20
+	 *
+	 * @param array $methods XMLRPC methods
+	 *
+	 * @return array XMLRPC methods
+	 */
+	public function xmlrpc_methods( $methods ) {
+
+		if ( isset( $methods['pingback.ping'] ) ) {
+			unset( $methods['pingback.ping'] );
+		}
+
+		if ( isset( $methods['pingback.extensions.getPingbacks'] ) ) {
+			unset( $methods['pingback.extensions.getPingbacks'] );
+		}
+
+		return $methods;
 
 	}
 
