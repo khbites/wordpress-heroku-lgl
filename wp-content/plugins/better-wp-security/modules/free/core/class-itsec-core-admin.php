@@ -2,7 +2,7 @@
 
 class ITSEC_Core_Admin {
 
-	function __construct() {
+	function run() {
 
 		if ( is_admin() ) {
 
@@ -18,6 +18,8 @@ class ITSEC_Core_Admin {
 	 * @since 4.0
 	 *
 	 * @param array $available_pages array of available page_hooks
+	 *
+	 * @return void
 	 */
 	public function add_admin_meta_boxes( $available_pages ) {
 
@@ -41,7 +43,7 @@ class ITSEC_Core_Admin {
 				'core'
 			);
 
-			if ( ! class_exists( 'backupbuddy_api0' ) ) {
+			if ( ! class_exists( 'backupbuddy_api' ) ) {
 				add_meta_box(
 					'itsec_get_backup',
 					__( 'Complete Your Security Strategy With BackupBuddy', 'it-l10n-better-wp-security' ),
@@ -93,11 +95,16 @@ class ITSEC_Core_Admin {
 	 */
 	private function initialize() {
 
-		add_action( 'itsec_add_admin_meta_boxes', array( $this, 'add_admin_meta_boxes' ) ); //add meta boxes to admin page
+		add_action( 'itsec_add_admin_meta_boxes', array(
+			$this, 'add_admin_meta_boxes'
+		) ); //add meta boxes to admin page
 		add_filter( 'itsec_meta_links', array( $this, 'add_plugin_meta_links' ) );
 
 		//Process support plugin nag
 		add_action( 'itsec_admin_init', array( $this, 'setup_nag' ) );
+
+		//Process support plugin nag
+		add_action( 'itsec_admin_init', array( $this, 'support_nag' ) );
 
 	}
 
@@ -135,7 +142,6 @@ class ITSEC_Core_Admin {
 
 		echo '</div>';
 
-
 		echo '<div class="column two">';
 		echo '<h2>' . __( 'Website Security is a complicated subject, but we have experts that can help.', 'it-l10n-better-wp-security' ) . '</h2>';
 		echo '<p>' . __( 'Get added peace of mind with professional support from our expert team and pro features to take your site security to the next level with iThemes Security Pro.', 'it-l10n-better-wp-security' ) . '</p>';
@@ -154,6 +160,8 @@ class ITSEC_Core_Admin {
 	 */
 	public function metabox_need_help() {
 
+		echo '<p>' . __( 'Since you are using the free version of iThemes Security from WordPress.org, you can get free support from the WordPress community.', 'it-l10n-better-wp-security' ) . '</p>';
+		echo '<p><a class="button-secondary" href="http://wordpress.org/support/plugin/better-wp-security" target="_blank">' . __( 'Get Free Support', 'it-l10n-better-wp-security' ) . '</a></p>';
 		echo '<p>' . __( 'Be sure your site has been properly secured by having one of our security experts tailor iThemes Security settings to the specific needs of this site.', 'it-l10n-better-wp-security' ) . '</p>';
 		echo '<p><a class="button-secondary" href="http://ithemes.com/security/ithemes-security-professional-setup" target="_blank">' . __( 'Have an expert secure my site', 'it-l10n-better-wp-security' ) . '</a></p>';
 		echo '<p>' . __( 'Get added peace of mind with professional support from our expert team and pro features with iThemes Security Pro.', 'it-l10n-better-wp-security' ) . '</p>';
@@ -261,6 +269,98 @@ class ITSEC_Core_Admin {
 			}
 
 			if ( sanitize_text_field( $_GET['itsec_setup'] ) == 'no' && isset( $_SERVER['HTTP_REFERER'] ) ) {
+
+				wp_redirect( $_SERVER['HTTP_REFERER'], '302' );
+
+			} else {
+
+				wp_redirect( 'admin.php?page=itsec', '302' );
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Display (and hide) support the plugin reminder.
+	 *
+	 * This will display a notice to the admin of the site only asking them to support
+	 * the plugin after they have used it for 30 days.
+	 *
+	 * @since 4.0
+	 *
+	 * @return void
+	 */
+	public function support_nag() {
+
+		global $blog_id, $itsec_globals;
+
+		if ( is_multisite() && ( $blog_id != 1 || ! current_user_can( 'manage_network_options' ) ) ) { //only display to network admin if in multisite
+			return;
+		}
+
+		$options = $itsec_globals['data'];
+
+		//display the notifcation if they haven't turned it off and they've been using the plugin at least 30 days
+		if ( ( ! isset( $options['already_supported'] ) || $options['already_supported'] === false ) && $options['activation_timestamp'] < ( $itsec_globals['current_time_gmt'] - 2592000 ) ) {
+
+			if ( ! function_exists( 'ithemes_plugin_support_notice' ) ) {
+
+				function ithemes_plugin_support_notice() {
+
+					global $itsec_globals;
+
+					echo '<div class="updated" id="itsec_support_notice">
+						<span>' . __( 'It looks like you\'ve been enjoying', 'it-l10n-better-wp-security' ) . ' ' . $itsec_globals['plugin_name'] . ' ' . __( 'for at least 30 days. Would you consider a small donation to help support continued development of the plugin?', 'it-l10n-better-wp-security' ) . '</span><input type="button" class="itsec-notice-button" value="' . __( 'Support This Plugin', 'it-l10n-better-wp-security' ) . '" onclick="document.location.href=\'?itsec_donate=yes&_wpnonce=' . wp_create_nonce( 'itsec-nag' ) . '\';">  <input type="button" class="itsec-notice-button" value="' . __( 'Rate it 5★\'s', 'it-l10n-better-wp-security' ) . '" onclick="document.location.href=\'?itsec_rate=yes&_wpnonce=' . wp_create_nonce( 'itsec-nag' ) . '\';">  <input type="button" class="itsec-notice-button" value="' . __( 'Tell Your Followers', 'it-l10n-better-wp-security' ) . '" onclick="document.location.href=\'?itsec_tweet=yes&_wpnonce=' . wp_create_nonce( 'itsec-nag' ) . '\';">  <input type="button" class="itsec-notice-hide" value="&times;" onclick="document.location.href=\'?itsec_no_nag=off&_wpnonce=' . wp_create_nonce( 'itsec-nag' ) . '\';">
+						</div>';
+
+				}
+
+			}
+
+			if ( is_multisite() ) {
+				add_action( 'network_admin_notices', 'ithemes_plugin_support_notice' ); //register notification
+			} else {
+				add_action( 'admin_notices', 'ithemes_plugin_support_notice' ); //register notification
+			}
+
+		}
+
+		//if they've clicked a button hide the notice
+		if ( ( isset( $_GET['itsec_no_nag'] ) || isset( $_GET['itsec_rate'] ) || isset( $_GET['itsec_tweet'] ) || isset( $_GET['itsec_donate'] ) ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'itsec-nag' ) ) {
+
+			$options = $itsec_globals['data'];
+
+			$options['already_supported'] = true;
+
+			update_site_option( 'itsec_data', $options );
+
+			if ( is_multisite() ) {
+				remove_action( 'network_admin_notices', 'ithemes_plugin_support_notice' );
+			} else {
+				remove_action( 'admin_notices', 'ithemes_plugin_support_notice' );
+			}
+
+			//take the user to paypal if they've clicked donate
+			if ( isset( $_GET['itsec_donate'] ) ) {
+				wp_redirect( 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=V647NGJSBC882', '302' );
+				exit();
+			}
+
+			//Go to the WordPress page to let them rate it.
+			if ( isset( $_GET['itsec_rate'] ) ) {
+				wp_redirect( 'http://wordpress.org/plugins/better-wp-security/', '302' );
+				exit();
+			}
+
+			//Compose a Tweet
+			if ( isset( $_GET['itsec_tweet'] ) ) {
+				wp_redirect( 'http://twitter.com/home?status=' . urlencode( 'I use ' . $itsec_globals['plugin_name'] . ' for WordPress by @iThemes and you should too - http://bit51.com/software/better-wp-security/' ), '302' );
+				exit();
+			}
+
+			if ( sanitize_text_field( $_GET['itsec_no_nag'] ) == 'off' && isset( $_SERVER['HTTP_REFERER'] ) ) {
 
 				wp_redirect( $_SERVER['HTTP_REFERER'], '302' );
 

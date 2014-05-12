@@ -6,7 +6,7 @@ class ITSEC_Strong_Passwords {
 		$settings,
 		$module_path;
 
-	function __construct() {
+	function run() {
 
 		$this->settings    = get_site_option( 'itsec_strong_passwords' );
 		$this->module_path = ITSEC_Lib::get_module_path( __FILE__ );
@@ -14,7 +14,7 @@ class ITSEC_Strong_Passwords {
 		//require strong passwords if turned on
 		if ( isset( $this->settings['enabled'] ) && $this->settings['enabled'] === true ) {
 			add_action( 'user_profile_update_errors', array( $this, 'enforce_strong_password' ), 0, 3 );
-			add_action( 'validate_password_reset', 'enforce_strong_password', 10, 2 );
+			add_action( 'validate_password_reset', array( $this, 'enforce_strong_password' ), 10, 2 );
 
 			if ( isset( $_GET['action'] ) && ( $_GET['action'] == 'rp' || $_GET['action'] == 'resetpass' ) && isset( $_GET['login'] ) ) {
 				add_action( 'login_head', array( $this, 'enforce_strong_password' ) );
@@ -43,10 +43,18 @@ class ITSEC_Strong_Passwords {
 		$minRole = $this->settings['roll'];
 
 		//all the standard roles and level equivalents
-		$availableRoles = array( 'administrator' => '8', 'editor' => '5', 'author' => '2', 'contributor' => '1', 'subscriber' => '0' );
+		$availableRoles = array(
+			'administrator' => '8', 'editor' => '5', 'author' => '2', 'contributor' => '1', 'subscriber' => '0'
+		);
 
 		//roles and subroles
-		$rollists = array( 'administrator' => array( 'subscriber', 'author', 'contributor', 'editor' ), 'editor' => array( 'subscriber', 'author', 'contributor' ), 'author' => array( 'subscriber', 'contributor' ), 'contributor' => array( 'subscriber' ), 'subscriber' => array(), );
+		$rollists = array(
+			'administrator' => array( 'subscriber', 'author', 'contributor', 'editor' ),
+			'editor'        => array( 'subscriber', 'author', 'contributor' ),
+			'author'        => array( 'subscriber', 'contributor' ),
+			'contributor'   => array( 'subscriber' ),
+			'subscriber'    => array(),
+		);
 
 		$password_meets_requirements = false;
 		$args                        = func_get_args();
@@ -120,6 +128,7 @@ class ITSEC_Strong_Passwords {
 	 * @return void
 	 */
 	public function shut_down_js() {
+
 		?>
 
 		<script type="text/javascript">

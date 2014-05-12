@@ -7,7 +7,7 @@ class ITSEC_Tweaks_Admin {
 		$core,
 		$module_path;
 
-	function __construct( $core ) {
+	function run( $core ) {
 
 		if ( is_admin() ) {
 
@@ -374,8 +374,6 @@ class ITSEC_Tweaks_Admin {
 	 */
 	public function tweaks_wordpress_disable_xmlrpc() {
 
-		global $itsec_globals;
-
 		if ( isset( $this->settings['disable_xmlrpc'] ) && $this->settings['disable_xmlrpc'] === true ) {
 
 			$log_type = 2;
@@ -390,13 +388,13 @@ class ITSEC_Tweaks_Admin {
 
 		}
 
-		echo '<select id="itsec_global_disable_xmlrpc" name="itsec_tweaks[disable_xmlrpc]">';
+		echo '<select id="itsec_tweaks_server_disable_xmlrpc" name="itsec_tweaks[disable_xmlrpc]">';
 
 		echo '<option value="0" ' . selected( $log_type, '0' ) . '>' . __( 'Off', 'it-l10n-better-wp-security' ) . '</option>';
 		echo '<option value="1" ' . selected( $log_type, '1' ) . '>' . __( 'Only Disable Trackbacks/Pingbacks', 'it-l10n-better-wp-security' ) . '</option>';
 		echo '<option value="2" ' . selected( $log_type, '2' ) . '>' . __( 'Completely Disable XMLRPC', 'it-l10n-better-wp-security' ) . '</option>';
 		echo '</select>';
-		echo '<label for="itsec_global_disable_xmlrpc"> ' . __( 'Disable XMLRPC', 'it-l10n-better-wp-security' ) . '</label>';
+		echo '<label for="itsec_tweaks_server_disable_xmlrpc"> ' . __( 'Disable XMLRPC', 'it-l10n-better-wp-security' ) . '</label>';
 		printf(
 			'<p class="description"><ul><li>%s</li><li>%s</li><li>%s</li></ul></p>',
 			__( 'Off = XMLRPC is fully enabled and will function as normal.', 'it-l10n-better-wp-security' ),
@@ -669,11 +667,38 @@ class ITSEC_Tweaks_Admin {
 
 			if ( $server_type === 'nginx' ) { //NGINX rules
 
-				$rules .= "\t# " . __( 'Rules to block access to WordPress specific files and wp-includes', 'it-l10n-better-wp-security' ) . PHP_EOL . "\tlocation ~ /\.ht { deny all; }" . PHP_EOL . "\tlocation ~ wp-config.php { deny all; }" . PHP_EOL . "\tlocation ~ readme.html { deny all; }" . PHP_EOL . "\tlocation ~ readme.txt { deny all; }" . PHP_EOL . "\tlocation ~ /install.php { deny all; }" . PHP_EOL . "\tlocation ^wp-includes/(.*).php { deny all; }" . PHP_EOL . "\tlocation ^/wp-admin/includes(.*)$ { deny all; }" . PHP_EOL;
+				$rules .= "\t# " . __( 'Rules to block access to WordPress specific files and wp-includes', 'it-l10n-better-wp-security' ) . PHP_EOL .
+				          "\tlocation ~ /\.ht { deny all; }" . PHP_EOL .
+				          "\tlocation ~ wp-config.php { deny all; }" . PHP_EOL .
+				          "\tlocation ~ readme.html { deny all; }" . PHP_EOL .
+				          "\tlocation ~ readme.txt { deny all; }" . PHP_EOL .
+				          "\tlocation ~ /install.php { deny all; }" . PHP_EOL .
+				          "\tlocation ^wp-includes/(.*).php { deny all; }" . PHP_EOL .
+				          "\tlocation ^/wp-admin/includes(.*)$ { deny all; }" . PHP_EOL;
 
 			} else { //rules for all other servers
 
-				$rules .= "# " . __( 'Rules to block access to WordPress specific files', 'it-l10n-better-wp-security' ) . PHP_EOL . "<files .htaccess>" . PHP_EOL . "\tOrder allow,deny" . PHP_EOL . "\tDeny from all" . PHP_EOL . "</files>" . PHP_EOL . "<files readme.html>" . PHP_EOL . "\tOrder allow,deny" . PHP_EOL . "\tDeny from all" . PHP_EOL . "</files>" . PHP_EOL . "<files readme.txt>" . PHP_EOL . "\tOrder allow,deny" . PHP_EOL . "\tDeny from all" . PHP_EOL . "</files>" . PHP_EOL . "<files install.php>" . PHP_EOL . "\tOrder allow,deny" . PHP_EOL . "\tDeny from all" . PHP_EOL . "</files>" . PHP_EOL . "<files wp-config.php>" . PHP_EOL . "\tOrder allow,deny" . PHP_EOL . "\tDeny from all" . PHP_EOL . "</files>" . PHP_EOL;
+				$rules .= "# " . __( 'Rules to block access to WordPress specific files', 'it-l10n-better-wp-security' ) . PHP_EOL .
+				          "<files .htaccess>" . PHP_EOL .
+				          "\tOrder allow,deny" . PHP_EOL .
+				          "\tDeny from all" . PHP_EOL .
+				          "</files>" . PHP_EOL .
+				          "<files readme.html>" . PHP_EOL .
+				          "\tOrder allow,deny" . PHP_EOL .
+				          "\tDeny from all" . PHP_EOL .
+				          "</files>" . PHP_EOL .
+				          "<files readme.txt>" . PHP_EOL .
+				          "\tOrder allow,deny" . PHP_EOL .
+				          "\tDeny from all" . PHP_EOL .
+				          "</files>" . PHP_EOL .
+				          "<files install.php>" . PHP_EOL .
+				          "\tOrder allow,deny" . PHP_EOL .
+				          "\tDeny from all" . PHP_EOL .
+				          "</files>" . PHP_EOL .
+				          "<files wp-config.php>" . PHP_EOL .
+				          "\tOrder allow,deny" . PHP_EOL .
+				          "\tDeny from all" . PHP_EOL .
+				          "</files>" . PHP_EOL;
 
 			}
 
@@ -694,7 +719,10 @@ class ITSEC_Tweaks_Admin {
 
 			} else { //rules for all other servers
 
-				$rules .= "<files xmlrpc.php>" . PHP_EOL . "\tOrder allow,deny" . PHP_EOL . "\tDeny from all" . PHP_EOL . "</files>" . PHP_EOL;
+				$rules .= "<files xmlrpc.php>" . PHP_EOL .
+				          "\tOrder allow,deny" . PHP_EOL .
+				          "\tDeny from all" . PHP_EOL .
+				          "</files>" . PHP_EOL;
 
 			}
 
@@ -727,7 +755,8 @@ class ITSEC_Tweaks_Admin {
 			//Open Apache rewrite rules
 			if ( $server_type !== 'nginx' ) {
 
-				$rules .= "<IfModule mod_rewrite.c>" . PHP_EOL . "\tRewriteEngine On" . PHP_EOL;
+				$rules .= "<IfModule mod_rewrite.c>" . PHP_EOL .
+				          "\tRewriteEngine On" . PHP_EOL;
 
 			}
 
@@ -736,7 +765,12 @@ class ITSEC_Tweaks_Admin {
 
 				$rules .= PHP_EOL . "\t# " . __( 'Rules to protect wp-includes', 'it-l10n-better-wp-security' ) . PHP_EOL;
 
-				$rules .= "\tRewriteRule ^wp-admin/includes/ - [F]" . PHP_EOL . "\tRewriteRule !^wp-includes/ - [S=3]" . PHP_EOL . "\tRewriteCond %{SCRIPT_FILENAME} !^(.*)wp-includes/ms-files.php" . PHP_EOL . "\tRewriteRule ^wp-includes/[^/]+\.php$ - [F]" . PHP_EOL . "\tRewriteRule ^wp-includes/js/tinymce/langs/.+\.php - [F]" . PHP_EOL . "\tRewriteRule ^wp-includes/theme-compat/ - [F]" . PHP_EOL;
+				$rules .= "\tRewriteRule ^wp-admin/includes/ - [F]" . PHP_EOL .
+				          "\tRewriteRule !^wp-includes/ - [S=3]" . PHP_EOL .
+				          "\tRewriteCond %{SCRIPT_FILENAME} !^(.*)wp-includes/ms-files.php" . PHP_EOL .
+				          "\tRewriteRule ^wp-includes/[^/]+\.php$ - [F]" . PHP_EOL .
+				          "\tRewriteRule ^wp-includes/js/tinymce/langs/.+\.php - [F]" . PHP_EOL .
+				          "\tRewriteRule ^wp-includes/theme-compat/ - [F]" . PHP_EOL;
 
 			}
 
@@ -796,7 +830,7 @@ class ITSEC_Tweaks_Admin {
 					          "\tif (\$args ~* \"(&#x22;|&#x27;|&#x3C;|&#x3E;|&#x5C;|&#x7B;|&#x7C;|%24&x)\"){ set \$susquery 1; }" . PHP_EOL .
 					          "\tif (\$args ~* \"(127.0)\") { set \$susquery 1; }" . PHP_EOL .
 					          "\tif (\$args ~* \"(globals|encode|localhost|loopback)\") { set \$susquery 1; }" . PHP_EOL .
-					          "\tif (\$args ~* \"(request|select(?!ed)|insert|concat|union|declare)\") { set \$susquery 1; }" . PHP_EOL .
+					          "\tif (\$args ~* \"(request|insert|concat|union|declare)\") { set \$susquery 1; }" . PHP_EOL .
 					          "\tif (\$susquery = 1) { return 403; }" . PHP_EOL;
 
 				} else { //rules for all other servers
@@ -816,7 +850,7 @@ class ITSEC_Tweaks_Admin {
 					          "\tRewriteCond %{QUERY_STRING} ^.*(%24&x).* [NC,OR]" . PHP_EOL .
 					          "\tRewriteCond %{QUERY_STRING} ^.*(127\.0).* [NC,OR]" . PHP_EOL .
 					          "\tRewriteCond %{QUERY_STRING} ^.*(globals|encode|localhost|loopback).* [NC,OR]" . PHP_EOL .
-					          "\tRewriteCond %{QUERY_STRING} ^.*(request|select(?!ed)|concat|insert|union|declare).* [NC]" . PHP_EOL .
+					          "\tRewriteCond %{QUERY_STRING} ^.*(request|concat|insert|union|declare).* [NC]" . PHP_EOL .
 					          "\tRewriteCond %{QUERY_STRING} !^loggedout=true" . PHP_EOL .
 					          "\tRewriteCond %{QUERY_STRING} !^action=rp" . PHP_EOL .
 					          "\tRewriteCond %{HTTP_COOKIE} !^.*wordpress_logged_in_.*$" . PHP_EOL .
@@ -903,9 +937,9 @@ class ITSEC_Tweaks_Admin {
 		//Return options to default on deactivation
 		if ( $deactivation === true || ( isset( $_GET['action'] ) && $_GET['action'] == 'deactivate' ) ) {
 
-			$input = array();
+			$input        = array();
 			$deactivating = true;
-			$initials = get_site_option( 'itsec_initials' );
+			$initials     = get_site_option( 'itsec_initials' );
 
 			if ( isset( $initials['file_editor'] ) && $initials['file_editor'] === false && defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT === true ) { //initially off, now on
 
@@ -1207,14 +1241,19 @@ class ITSEC_Tweaks_Admin {
 
 		array_push( $statuses[$status_array], $status );
 
-		if ( isset( $this->settings['disable_xmlrpc'] ) && $this->settings['disable_xmlrpc'] === true ) {
+		if ( isset( $this->settings['disable_xmlrpc'] ) && $this->settings['disable_xmlrpc'] === 2 ) {
 
 			$status_array = 'safe-low';
 			$status       = array( 'text' => __( 'XML-RPC is not available on your WordPress installation.', 'it-l10n-better-wp-security' ), 'link' => '#itsec_tweaks_server_disable_xmlrpc', );
 
-		} else {
+		} elseif ( isset( $this->settings['disable_xmlrpc'] ) && $this->settings['disable_xmlrpc'] === 1 ) {
 
 			$status_array = 'low';
+			$status       = array( 'text' => __( 'XML-RPC is protecting you from the trackback and pingback attack but is still available on your site.', 'it-l10n-better-wp-security' ), 'link' => '#itsec_tweaks_server_disable_xmlrpc', );
+
+		}else {
+
+			$status_array = 'medium';
 			$status       = array( 'text' => __( 'XML-RPC is available on your WordPress installation. Attackers can use this feature to attack your site. Click here to disable access to XML-RPC.', 'it-l10n-better-wp-security' ), 'link' => '#itsec_tweaks_server_disable_xmlrpc', );
 
 		}
@@ -1728,7 +1767,7 @@ class ITSEC_Tweaks_Admin {
 		$input['comment_spam']                = ( isset( $input['comment_spam'] ) && intval( $input['comment_spam'] == 1 ) ? true : false );
 		$input['random_version']              = ( isset( $input['random_version'] ) && intval( $input['random_version'] == 1 ) ? true : false );
 		$input['file_editor']                 = ( isset( $input['file_editor'] ) && intval( $input['file_editor'] == 1 ) ? true : false );
-		$input['disable_xmlrpc'] = isset( $input['disable_xmlrpc'] ) ? intval( $input['disable_xmlrpc'] ) : 0;
+		$input['disable_xmlrpc']              = isset( $input['disable_xmlrpc'] ) ? intval( $input['disable_xmlrpc'] ) : 0;
 		$input['uploads_php']                 = ( isset( $input['uploads_php'] ) && intval( $input['uploads_php'] == 1 ) ? true : false );
 		$input['safe_jquery']                 = ( isset( $input['safe_jquery'] ) && intval( $input['safe_jquery'] == 1 ) ? true : false );
 		$input['login_errors']                = ( isset( $input['login_errors'] ) && intval( $input['login_errors'] == 1 ) ? true : false );

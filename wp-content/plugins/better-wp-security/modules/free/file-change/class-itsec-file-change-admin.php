@@ -9,7 +9,7 @@ class ITSEC_File_Change_Admin {
 		$module_path,
 		$module_path_relative;
 
-	function __construct( $core, $module ) {
+	function run( $core, $module ) {
 
 		if ( is_admin() ) {
 
@@ -64,7 +64,7 @@ class ITSEC_File_Change_Admin {
 			'itsec_file_change_warning',
 			array(
 				'nonce' => wp_create_nonce( 'itsec_file_change_warning' ),
-				'url' => admin_url() . 'admin.php?page=toplevel_page_itsec_logs',
+				'url'   => admin_url() . 'admin.php?page=toplevel_page_itsec_logs',
 			)
 		);
 
@@ -119,12 +119,18 @@ class ITSEC_File_Change_Admin {
 		if ( $this->settings['enabled'] === true ) {
 
 			$status_array = 'safe-medium';
-			$status       = array( 'text' => __( 'Your site will detect changes to your files.', 'it-l10n-better-wp-security' ), 'link' => '#itsec_file_change_enabled', );
+			$status       = array(
+				'text' => __( 'Your site will detect changes to your files.', 'it-l10n-better-wp-security' ),
+				'link' => '#itsec_file_change_enabled',
+			);
 
 		} else {
 
 			$status_array = 'medium';
-			$status       = array( 'text' => __( 'Your website is not looking for changed files. Consider turning on file change detections.', 'it-l10n-better-wp-security' ), 'link' => '#itsec_file_change_enabled', );
+			$status       = array(
+				'text' => __( 'Your website is not looking for changed files. Consider turning on file change detections.', 'it-l10n-better-wp-security' ),
+				'link' => '#itsec_file_change_enabled',
+			);
 
 		}
 
@@ -390,7 +396,7 @@ class ITSEC_File_Change_Admin {
 
 			$next_run = $next_run_day . ' at ' . date( 'g:i a', $next_run_raw );
 
-			echo '<p>' . __( 'Next automatic scan at: ', 'ithemes_security' ) . '<strong>' . $next_run . '*</strong></p>';
+			echo '<p>' . __( 'Next automatic scan at: ', 'it-l10n-better-wp-security' ) . '<strong>' . $next_run . '*</strong></p>';
 			echo '<p><em>*' . __( 'Automatic file change scanning is triggered by a user visiting your page and may not happen exactly at the time listed.', 'it-l10n-better-wp-security' ) . '</em>';
 
 		}
@@ -489,10 +495,14 @@ class ITSEC_File_Change_Admin {
 		$this->module_path          = ITSEC_Lib::get_module_path( __FILE__ );
 		$this->module_path_relative = ITSEC_Lib::get_module_path( __FILE__, true );
 
-		add_action( 'itsec_add_admin_meta_boxes', array( $this, 'add_admin_meta_boxes' ) ); //add meta boxes to admin page
+		add_action( 'itsec_add_admin_meta_boxes', array(
+			$this, 'add_admin_meta_boxes'
+		) ); //add meta boxes to admin page
 		add_action( 'itsec_admin_init', array( $this, 'initialize_admin' ) ); //initialize admin area
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_script' ) ); //enqueue scripts for admin page
-		add_filter( 'itsec_add_dashboard_status', array( $this, 'dashboard_status' ) ); //add information for plugin status
+		add_filter( 'itsec_add_dashboard_status', array(
+			$this, 'dashboard_status'
+		) ); //add information for plugin status
 		add_filter( 'itsec_metaboxes', array( $this, 'register_logger_metaboxes' ) ); //adds logs metaboxes
 		add_filter( 'itsec_tracking_vars', array( $this, 'tracking_vars' ) );
 
@@ -711,11 +721,15 @@ class ITSEC_File_Change_Admin {
 	 */
 	public function register_logger_metaboxes( $metaboxes ) {
 
-		$metaboxes[] = array(
-			'module'   => 'file_change',
-			'title'    => __( 'File Change History', 'it-l10n-better-wp-security' ),
-			'callback' => array( $this, 'logs_metabox' )
-		);
+		if ( isset( $this->settings['enabled'] ) && $this->settings['enabled'] === true ) {
+
+			$metaboxes[] = array(
+				'module'   => 'file_change',
+				'title'    => __( 'File Change History', 'it-l10n-better-wp-security' ),
+				'callback' => array( $this, 'logs_metabox' )
+			);
+
+		}
 
 		return $metaboxes;
 
@@ -738,7 +752,7 @@ class ITSEC_File_Change_Admin {
 		$input['method']       = ( isset( $input['method'] ) && intval( $input['method'] == 1 ) ? true : false );
 		$input['email']        = ( isset( $input['email'] ) && intval( $input['email'] == 1 ) ? true : false );
 		$input['notify_admin'] = ( isset( $input['notify_admin'] ) && intval( $input['notify_admin'] == 1 ) ? true : false );
-		$input['last_chunk'] = ( isset( $input['last_chunk'] ) ? $input['last_chunk'] : false );
+		$input['last_chunk']   = ( isset( $input['last_chunk'] ) ? $input['last_chunk'] : false );
 
 		if ( ! is_array( $input['file_list'] ) ) {
 			$file_list = explode( PHP_EOL, $input['file_list'] );
@@ -764,9 +778,15 @@ class ITSEC_File_Change_Admin {
 
 		foreach ( $file_types as $file_type ) {
 
-			$good_type = sanitize_text_field( '.' . str_replace( '.', '', $file_type ) );
+			$file_type = trim( $file_type );
 
-			$good_types[] = sanitize_text_field( trim( $good_type ) );
+			if ( strlen( $file_type ) > 0 && $file_type != '.' ) {
+
+				$good_type = sanitize_text_field( '.' . str_replace( '.', '', $file_type ) );
+
+				$good_types[] = sanitize_text_field( trim( $good_type ) );
+
+			}
 		}
 
 		$input['types'] = $good_types;

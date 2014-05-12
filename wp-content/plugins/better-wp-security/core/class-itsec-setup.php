@@ -111,7 +111,7 @@ class ITSEC_Setup {
 
 		if ( $has_pro ) {
 
-			foreach ( $itsec_globals['pro_modules'] as $module ) {
+			foreach ( $itsec_globals['pro_modules'] as $module => $info ) {
 
 				if ( file_exists( $pro_modules_folder . '/' . $module . '/setup.php' ) ) {
 					require( $pro_modules_folder . '/' . $module . '/setup.php' );
@@ -121,7 +121,7 @@ class ITSEC_Setup {
 
 		}
 
-		foreach ( $itsec_globals['free_modules'] as $module ) {
+		foreach ( $itsec_globals['free_modules'] as $module => $info ) {
 
 			if ( ( $has_pro === false || ! in_array( $module, $itsec_globals['pro_modules'] ) ) && file_exists( $free_modules_folder . '/' . $module . '/setup.php' ) ) {
 				require( $free_modules_folder . '/' . $module . '/setup.php' );
@@ -369,6 +369,13 @@ class ITSEC_Setup {
 
 		update_site_option( 'itsec_data', $itsec_globals['data'] );
 
+		if ( $itsec_old_version < 4030 ) {
+
+			ITSEC_Lib::create_database_tables(); //adds username field to lockouts and temp
+			add_site_option( 'itsec_rewrites_changed', true );
+
+		}
+
 	}
 
 	/**
@@ -396,6 +403,7 @@ class ITSEC_Setup {
 		delete_site_option( 'itsec_no_file_lock_release' );
 		delete_site_option( 'itsec_clear_login' );
 		delete_site_transient( 'ITSEC_SHOW_WRITE_FILES_TOOLTIP' );
+		delete_site_transient( 'itsec_upload_dir' );
 
 		$htaccess = ITSEC_Lib::get_htaccess();
 
