@@ -1,0 +1,162 @@
+/*!
+ * Roots 6.5.2
+ */
+
+@import "bootstrap/bootstrap.less";
+
+@import (reference) url('http://cdn.jsdelivr.net/genericons/3.0.3/genericons.css');
+
+
+/* LGL Colors */
+
+
+
+@color-white-light: 	#f7f7f7;
+@color-grey-dark: 	#5e5f5e;
+@color-grey:		#a7b1b0;
+@color-grey-light:	#949d9e;
+@color-green-dark:	#426b5d;
+@color-green:		#23aa73;
+@color-green-light:	#9de8c4;
+
+@color-red:		#e30011;
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+body { }
+
+
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.banner { 
+	.navbar-brand {
+	  padding: 5px !important;
+		img {
+		  vertical-align: middle;
+		  height: 39px;
+	  	  max-width: 100%; 
+		}
+	}
+
+}
+
+
+
+/* ==========================================================================
+   Content
+   ========================================================================== */
+
+.content { 
+	a { color: @color-green }
+	a:hover { 
+	 color: @color-green-dark;
+	 text-decoration: none;
+	}
+   
+	h2.entry-title {
+	  background-color: #eee;
+	  border-bottom: 1px solid @color-grey-light;
+ 	  margin-bottom: 0;
+	  padding: 5px;
+	}
+
+	time {
+	 float: right;
+	}
+
+	figure {
+	 float: left;
+	}
+
+	.attachment-post-thumbnail {
+	  .img-thumbnail;
+	}
+
+
+	figure + .entry-summary {
+	 /* see templates/content.php - thumbnail/features img is 150px */
+	  margin-left: 150px + 15px;
+	}
+
+	.type-post {
+	  .clearfix(); 
+	}
+ 	
+
+	time.published:before {
+	 content: '\f305';
+	 font: normal 24px/1 'Genericons';
+	 margin-right: 1px;
+	 position: relative
+	 top: 1px;  
+	}
+
+}
+
+
+
+/* ==========================================================================
+   Primary Content
+   ========================================================================== */
+
+.main { }
+
+/* Gallery Shortcode */
+.gallery-row { padding: 15px 0; }
+
+
+
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
+
+.sidebar { }
+
+
+
+/* ==========================================================================
+   Posts
+   ========================================================================== */
+
+.hentry header { }
+.hentry time { }
+.hentry .byline { }
+.hentry .entry-content { }
+.hentry footer { }
+
+
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.content-info { }
+
+
+
+/* ==========================================================================
+   WordPress Generated Classes
+   See: http://codex.wordpress.org/CSS#WordPress_Generated_Classes
+   ========================================================================== */
+
+.aligncenter { display: block; margin: 0 auto; }
+.alignleft { float: left; }
+.alignright { float: right; }
+figure.alignnone { margin-left: 0; margin-right: 0; }
+
+
+
+/* ==========================================================================
+   Media Queries
+   ========================================================================== */
+
+@media (min-width: @screen-sm-min) { }
+
+@media (min-width: @screen-md-min) { }
+
+@media (min-width: @screen-lg-min) { }
