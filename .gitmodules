@@ -1,0 +1,3 @@
+[submodule "wp-content/themes/wp-bootstrap"]
+	path = wp-content/themes/wp-bootstrap
+	url = git://github.com/320press/wordpress-bootstrap
