@@ -7,9 +7,9 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 }
 
 ?>
-<div id="mc4wp-<?php echo $tab; ?>" class="wrap mc4wp-settings">
+<div id="mc4wp" class="wrap mc4wp-settings">
 
-	<h2><img src="<?php echo MC4WP_LITE_PLUGIN_URL . 'assets/img/menu-icon.png'; ?>" /> MailChimp for WordPress: MailChimp <?php _e( 'Settings' ); ?></h2>
+	<h2><img src="<?php echo MC4WP_LITE_PLUGIN_URL . 'assets/img/menu-icon.png'; ?>" /> <?php _e( 'MailChimp for WordPress', 'mailchimp-for-wp' ); ?>: <?php _e( 'MailChimp Settings', 'mailchimp-for-wp' ); ?></h2>
 
 	<div id="mc4wp-content">
 
@@ -29,9 +29,9 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 			<table class="form-table">
 
 				<tr valign="top">
-					<th scope="row"><label for="mailchimp_api_key">MailChimp API Key</label></th>
+					<th scope="row"><label for="mailchimp_api_key">MailChimp <?php _e( 'API Key', 'mailchimp-for-wp' ); ?></label></th>
 					<td>
-						<input type="text" class="widefat" placeholder="Your MailChimp API key" id="mailchimp_api_key" name="mc4wp_lite[api_key]" value="<?php echo $opts['api_key']; ?>" />
+						<input type="text" class="widefat" placeholder="<?php _e( 'Your MailChimp API key', 'mailchimp-for-wp' ); ?>" id="mailchimp_api_key" name="mc4wp_lite[api_key]" value="<?php echo $opts['api_key']; ?>" />
 						<p class="help"><a target="_blank" href="http://admin.mailchimp.com/account/api"><?php _e( 'Get your API key here.', 'mailchimp-for-wp' ); ?></a></p>
 					</td>
 					
@@ -60,9 +60,9 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 				<tr>
 					<th class="mc4wp-hide-smallscreens" scope="col">List ID</th>
 					<th scope="col">List Name</th>
-					<th scope="col">Merge Fields</th>
+					<th scope="col">Merge Fields <code>TAG</code></th>
 					<th scope="col">Groupings</th>
-					<th scope="col">Subscriber Count</th>
+					<th class="mc4wp-hide-smallscreens" scope="col">Subscribers</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -78,7 +78,7 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 							<?php if( ! empty( $list->merge_vars ) && is_array( $list->merge_vars ) ) { ?>
 								<ul class="ul-square" style="margin-top: 0;">
 									<?php foreach( $list->merge_vars as $merge_var ) { ?>
-										<li><?php echo esc_html( $merge_var->name ); ?></li>
+										<li><?php echo esc_html( $merge_var->name ); if( $merge_var->req ) echo '<span style="color:red;">*</span>'; ?> <code><?php echo esc_html( $merge_var->tag ); ?></code></li>
 									<?php } ?>
 								</ul>
 							<?php } ?>
@@ -102,7 +102,7 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 							} ?>
 
 						</td>
-						<td><?php echo esc_html( $list->subscriber_count ); ?></td>
+						<td class="mc4wp-hide-smallscreens"><?php echo esc_html( $list->subscriber_count ); ?></td>
 					</tr>
 					<?php 
 					}  

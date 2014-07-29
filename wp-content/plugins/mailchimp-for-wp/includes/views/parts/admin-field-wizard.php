@@ -9,11 +9,6 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 
 	<h4 class="mc4wp-title"><?php _e( 'Add a new field', 'mailchimp-for-wp' ); ?></h4>
 
-	
-	<p class="mc4wp-notice no-lists-selected" <?php if(!empty($opts['lists'])) { ?>style="display: none;" <?php } ?>>
-		<?php _e( 'Select at least one list first.', 'mailchimp-for-wp' ); ?>
-	</p>
-
 	<p><?php _e( 'Use the tool below to generate the HTML for your form fields.', 'mailchimp-for-wp' ); ?></p>
 	<p>
 		<select class="widefat" id="mc4wp-fw-mailchimp-fields">
@@ -21,8 +16,8 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 			<optgroup label="MailChimp merge fields" class="merge-fields"></optgroup>
 			<optgroup label="Interest groupings" class="groupings"></optgroup>
 			<optgroup label="Other" class="other">
-				<option class="default" value="submit">Submit button</option>
-				<option class="default" disabled>(PRO ONLY) Lists Choice</option>				
+				<option class="default" value="submit"><?php _e( 'Submit Button' ,'mailchimp-for-wp' ); ?></option>
+				<option class="default" disabled>(PRO ONLY) <?php _e( 'Lists Choice' ,'mailchimp-for-wp' ); ?></option>
 			</optgroup>
 		</select>
 	</p>
@@ -30,12 +25,12 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 	<div id="mc4wp-fw-fields">
 
 		<p class="row label">
-			<label for="mc4wp-fw-label">Label <small><?php _e( '(optional)', 'mailchimp-for-wp' ); ?></small></label>
+			<label for="mc4wp-fw-label"><?php _e('Label', 'mailchimp-for-wp' ); ?> <small><?php _e( '(optional)', 'mailchimp-for-wp' ); ?></small></label>
 			<input class="widefat" type="text" id="mc4wp-fw-label" />
 		</p>
 
 		<p class="row placeholder">
-			<label for="mc4wp-fw-placeholder">Placeholder <small><?php _e( '(optional)', 'mailchimp-for-wp' ); ?></small></label>
+			<label for="mc4wp-fw-placeholder"><?php _e( 'Placeholder', 'mailchimp-for-wp' ); ?> <small><?php _e( '(optional)', 'mailchimp-for-wp' ); ?></small></label>
 			<input class="widefat" type="text" id="mc4wp-fw-placeholder" />
 		</p>
 
@@ -45,7 +40,7 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 		</p>
 
 		<p class="row values" id="mc4wp-fw-values">
-			<label for="mc4wp-fw-values">Value labels <small><?php _e( '(leave empty to hide)', 'mailchimp-for-wp' ); ?></small></label>
+			<label for="mc4wp-fw-values"><?php _e( 'Labels', 'mailchimp-for-wp' ); ?> <small><?php _e( '(leave empty to hide)', 'mailchimp-for-wp' ); ?></small></label>
 		</p>
 
 		<p class="row wrap-p">
@@ -68,4 +63,9 @@ if( ! defined("MC4WP_LITE_VERSION") ) {
 		</p>
 
 	</div>
+
+	<p class="mc4wp-notice no-lists-selected" <?php if(!empty($opts['lists'])) { ?>style="display: none;" <?php } ?>>
+		<?php _e( 'Select at least one list first.', 'mailchimp-for-wp' ); ?>
+	</p>
+
 </div>

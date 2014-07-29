@@ -83,7 +83,7 @@ class MC4WP_Lite_Form_Manager {
             return false;
         }
 
-        if( $opts['css'] != 1 && $opts['css'] != 'default' ) {
+        if( $opts['css'] != 1 && $opts['css'] !== 'default' ) {
 
             $form_theme = $opts['css'];
             if( in_array( $form_theme, array( 'blue', 'green', 'dark', 'light', 'red' ) ) ) {
@@ -104,21 +104,19 @@ class MC4WP_Lite_Form_Manager {
 	*/
 	private function get_css_classes() {
 
-		$css_classes = array(
-			'form',
-			'mc4wp-form' 
-		);
+		// Allow devs to add CSS classes
+		$css_classes = apply_filters( 'mc4wp_form_css_classes', array( 'form' ) );
+
+		// the following classes MUST be used
+		$css_classes[] = 'mc4wp-form';
 
 		if( $this->error !== '' ) {
 			$css_classes[] = 'mc4wp-form-error';
 		}
 
-		if( $this->success ) {
+		if( $this->success === true ) {
 			$css_classes[] = 'mc4wp-form-success';
 		}
-
-		// Allow devs to add CSS classes
-		$css_classes = apply_filters( 'mc4wp_form_css_classes', $css_classes );
 
 		return implode( ' ', $css_classes );
 	}
@@ -143,7 +141,7 @@ class MC4WP_Lite_Form_Manager {
 
 		$form_action = apply_filters( 'mc4wp_form_action', mc4wp_get_current_url() );
 
-		$content = "\n<!-- Form by MailChimp for WordPress plugin v". MC4WP_LITE_VERSION ." - http://dannyvankooten.com/mailchimp-for-wordpress/ -->\n";
+		$content = "\n<!-- Form by MailChimp for WordPress plugin v". MC4WP_LITE_VERSION ." - https://dannyvankooten.com/mailchimp-for-wordpress/ -->\n";
 		$content .= '<form method="post" action="'. $form_action .'" id="mc4wp-form-'.$this->form_instance_number.'" class="'.$css_classes.'">';
 
 		// maybe hide the form
@@ -289,20 +287,24 @@ class MC4WP_Lite_Form_Manager {
 	}
 
 	/**
-	* Get posted form data
-	*
-	* Strips internal MailChimp for WP variables from the posted data array
-	*
-	* @return array
-	*/
+	 * Get posted form data
+	 *
+	 * Strips internal MailChimp for WP variables from the posted data array
+	 *
+	 * @return array
+	 */
 	public function get_posted_form_data() {
 
 		$data = array();
+		$ignored_fields = array( 'CPTCH_NUMBER', 'CNTCTFRM_CONTACT_ACTION', 'CPTCH_RESULT', 'CPTCH_TIME' );
 
 		foreach( $_POST as $name => $value ) {
-			if( $name[0] !== '_' ) {
-				$data[$name] = $value;
+
+			if( $name[0] === '_' || in_array( strtoupper( $name ), $ignored_fields ) ) {
+				continue;
 			}
+
+			$data[$name] = $value;
 		}
 
 		// store data somewhere safe
@@ -369,7 +371,7 @@ class MC4WP_Lite_Form_Manager {
 
 			// uppercase all variables
 			$name = trim( strtoupper( $name ) );
-			$value = ( is_scalar( $value ) ) ? trim( $value ) : $value;
+			$value = ( is_scalar( $value ) ) ? trim( stripslashes( $value ) ) : $value;
 
 			if( $name === 'EMAIL' && is_email($value) ) {
 				// set the email address
@@ -393,7 +395,7 @@ class MC4WP_Lite_Form_Manager {
 					if ( is_numeric( $grouping_id_or_name ) ) {
 						$grouping['id'] = $grouping_id_or_name;
 					} else {
-						$grouping['name'] = $grouping_id_or_name;
+						$grouping['name'] = stripslashes( $grouping_id_or_name );
 					}
 
 					// comma separated list should become an array
@@ -449,7 +451,6 @@ class MC4WP_Lite_Form_Manager {
 		if( isset( $merge_vars['NAME'] ) && !isset( $merge_vars['FNAME'] ) && ! isset( $merge_vars['LNAME'] ) ) {
 
 			$strpos = strpos($merge_vars['NAME'], ' ');
-
 			if( $strpos !== false ) {
 				$merge_vars['FNAME'] = substr($merge_vars['NAME'], 0, $strpos);
 				$merge_vars['LNAME'] = substr($merge_vars['NAME'], $strpos);
@@ -458,8 +459,13 @@ class MC4WP_Lite_Form_Manager {
 			}
 		}
 
+		// set ip address
+		if( ! isset( $merge_vars['OPTIN_IP'] ) && isset( $_SERVER['REMOTE_ADDR'] ) ) {
+			$merge_vars['OPTIN_IP'] = $_SERVER['REMOTE_ADDR'];
+		}
+
 		$api = mc4wp_get_api();
-		$opts = mc4wp_get_options('form');
+		$opts = mc4wp_get_options( 'form' );
 
 		$lists = $this->get_lists();
 
@@ -476,13 +482,13 @@ class MC4WP_Lite_Form_Manager {
 
 		foreach ( $lists as $list_id ) {
 			// allow plugins to alter merge vars for each individual list
-			$list_merge_vars = apply_filters('mc4wp_merge_vars', $merge_vars, 0, $list_id);
+			$list_merge_vars = apply_filters( 'mc4wp_merge_vars', $merge_vars, 0, $list_id );
 
 			// send a subscribe request to MailChimp for each list
 			$result = $api->subscribe( $list_id, $email, $list_merge_vars, $email_type, $opts['double_optin'] );
 		}
 
-		do_action('mc4wp_after_subscribe', $email, $merge_vars, 0, $result);
+		do_action( 'mc4wp_after_subscribe', $email, $merge_vars, 0, $result );
 
 		if ( $result !== true ) {
 			// subscribe request failed, store error.
@@ -494,12 +500,6 @@ class MC4WP_Lite_Form_Manager {
 		// store user email in a cookie
 		$this->set_email_cookie( $email );
 
-		/**
-		* @deprecated Don't use, will be removed in v2.0
-		*/
-		$from_url = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
-		do_action('mc4wp_subscribe_form', $email, $list_id, 0, $merge_vars, $from_url); 
-		
 		// Store success result
 		$this->success = true;
 
@@ -544,7 +544,7 @@ class MC4WP_Lite_Form_Manager {
 
 			// make sure lists is an array
 			if( ! is_array( $lists ) ) {
-				$lists = array( $lists );
+				$lists = array( trim( $lists ) );
 			}
 
 		}
