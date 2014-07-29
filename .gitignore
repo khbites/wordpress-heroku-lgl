@@ -8,7 +8,9 @@ sitemap.xml*
 chst
 chwww
 db.*sh
+# Commercial Plugins not put on github:
 wp-content/plugins/woocommerce-subscribe-to-newsletter/
+wp-content/themes/superstore/
 # submodules that cause temporary problems when switching branches
 # e.g. mv wpro wpro.submodule
 #      git checkout master
