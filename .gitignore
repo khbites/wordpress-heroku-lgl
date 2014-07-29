@@ -8,6 +8,7 @@ sitemap.xml*
 chst
 chwww
 db.*sh
+wp-content/plugins/woocommerce-subscribe-to-newsletter/
 # submodules that cause temporary problems when switching branches
 # e.g. mv wpro wpro.submodule
 #      git checkout master
