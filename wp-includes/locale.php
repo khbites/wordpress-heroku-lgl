@@ -96,13 +96,13 @@ class WP_Locale {
 	 */
 	function init() {
 		// The Weekdays
-		$this->weekday[0] = /* translators: weekday */ __('Sunday');
-		$this->weekday[1] = /* translators: weekday */ __('Monday');
-		$this->weekday[2] = /* translators: weekday */ __('Tuesday');
-		$this->weekday[3] = /* translators: weekday */ __('Wednesday');
-		$this->weekday[4] = /* translators: weekday */ __('Thursday');
-		$this->weekday[5] = /* translators: weekday */ __('Friday');
-		$this->weekday[6] = /* translators: weekday */ __('Saturday');
+		$this->weekday[0] = /* translators: weekday */ __('Sontag');
+		$this->weekday[1] = /* translators: weekday */ __('Montag');
+		$this->weekday[2] = /* translators: weekday */ __('Dienstag');
+		$this->weekday[3] = /* translators: weekday */ __('Mittwoch');
+		$this->weekday[4] = /* translators: weekday */ __('Donnerstag');
+		$this->weekday[5] = /* translators: weekday */ __('Freitag');
+		$this->weekday[6] = /* translators: weekday */ __('Samstag');
 
 		// The first letter of each day. The _%day%_initial suffix is a hack to make
 		// sure the day initials are unique.
@@ -119,27 +119,27 @@ class WP_Locale {
 		}
 
 		// Abbreviations for each day.
-		$this->weekday_abbrev[__('Sunday')]    = /* translators: three-letter abbreviation of the weekday */ __('Sun');
-		$this->weekday_abbrev[__('Monday')]    = /* translators: three-letter abbreviation of the weekday */ __('Mon');
-		$this->weekday_abbrev[__('Tuesday')]   = /* translators: three-letter abbreviation of the weekday */ __('Tue');
-		$this->weekday_abbrev[__('Wednesday')] = /* translators: three-letter abbreviation of the weekday */ __('Wed');
-		$this->weekday_abbrev[__('Thursday')]  = /* translators: three-letter abbreviation of the weekday */ __('Thu');
-		$this->weekday_abbrev[__('Friday')]    = /* translators: three-letter abbreviation of the weekday */ __('Fri');
-		$this->weekday_abbrev[__('Saturday')]  = /* translators: three-letter abbreviation of the weekday */ __('Sat');
+		$this->weekday_abbrev[__('Sunday')]    = /* translators: three-letter abbreviation of the weekday */ __('So');
+		$this->weekday_abbrev[__('Monday')]    = /* translators: three-letter abbreviation of the weekday */ __('Mo');
+		$this->weekday_abbrev[__('Tuesday')]   = /* translators: three-letter abbreviation of the weekday */ __('Di');
+		$this->weekday_abbrev[__('Wednesday')] = /* translators: three-letter abbreviation of the weekday */ __('Mi');
+		$this->weekday_abbrev[__('Thursday')]  = /* translators: three-letter abbreviation of the weekday */ __('Do');
+		$this->weekday_abbrev[__('Friday')]    = /* translators: three-letter abbreviation of the weekday */ __('Fr');
+		$this->weekday_abbrev[__('Saturday')]  = /* translators: three-letter abbreviation of the weekday */ __('Sa');
 
 		// The Months
-		$this->month['01'] = /* translators: month name */ __('January');
-		$this->month['02'] = /* translators: month name */ __('February');
-		$this->month['03'] = /* translators: month name */ __('March');
+		$this->month['01'] = /* translators: month name */ __('Jänner');
+		$this->month['02'] = /* translators: month name */ __('Februar');
+		$this->month['03'] = /* translators: month name */ __('März');
 		$this->month['04'] = /* translators: month name */ __('April');
-		$this->month['05'] = /* translators: month name */ __('May');
-		$this->month['06'] = /* translators: month name */ __('June');
-		$this->month['07'] = /* translators: month name */ __('July');
+		$this->month['05'] = /* translators: month name */ __('Mai');
+		$this->month['06'] = /* translators: month name */ __('Juni');
+		$this->month['07'] = /* translators: month name */ __('Juli');
 		$this->month['08'] = /* translators: month name */ __('August');
 		$this->month['09'] = /* translators: month name */ __('September');
-		$this->month['10'] = /* translators: month name */ __('October');
+		$this->month['10'] = /* translators: month name */ __('Oktober');
 		$this->month['11'] = /* translators: month name */ __('November');
-		$this->month['12'] = /* translators: month name */ __('December');
+		$this->month['12'] = /* translators: month name */ __('Dezember');
 
 		// Abbreviations for each month. Uses the same hack as above to get around the
 		// 'May' duplication.
