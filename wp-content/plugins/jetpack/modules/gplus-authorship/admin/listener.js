@@ -1,16 +1,12 @@
-/* jshint onevar: false, smarttabs: true, devel: true */
-/* global pm, GPlusL10n */
-
 jQuery( function( $ ) {
 
 	pm.bind( 'googlePlusSignInMessage', function( message ) {
-		if ( 'undefined' !== typeof message.error) {
+		if ( 'undefined' != typeof message.error)
 			GooglePlusMessageHandler.error( message.error );
-		} else if ( 'undefined' !== typeof message.success && 'undefined' !== typeof message.result ) {
+		else if ( 'undefined' != typeof message.success && 'undefined' != typeof message.result )
 			GooglePlusMessageHandler.success( message.result );
-		} else {
+		else
 			GooglePlusMessageHandler.unknownMessage( message );
-		}
 	} );
 
 	var GooglePlusMessageHandler = {
@@ -34,9 +30,9 @@ jQuery( function( $ ) {
 		},
 
 		error: function( error ) {
-			if ( 'unknown' === error ) {
+			if ( 'unknown' == error ) {
 				$( GooglePlusMessageHandler.outputContainer ).text( GPlusL10n.unknownError );
-			} else if ( 'access_denied' === error ) {
+			} else if ( 'access_denied' == error ) {
 				$( GooglePlusMessageHandler.outputContainer ).text( GPlusL10n.accessDenied );
 			} else {
 				$( GooglePlusMessageHandler.outputContainer ).text( error );
@@ -47,7 +43,7 @@ jQuery( function( $ ) {
 			console.log( 'DEBUG: An unknown message was passed via postMessage:' );
 			console.log( message );
 			GooglePlusMessageHandler.error( 'unknown' );
-		}
+		},
 
 	};
 

@@ -1,5 +1,3 @@
-/* global jetpack_post_by_email:true, ajaxurl */
-
 jetpack_post_by_email = {
 	init: function() {
 		jQuery( '#jp-pbe-enable' ).click( jetpack_post_by_email.enable );
@@ -20,7 +18,8 @@ jetpack_post_by_email = {
 	},
 
 	handle_enabled: function( response ) {
-		var enabled = false, error;
+		var enabled = false;
+		var error;
 		try {
 			error = JSON.parse( response );
 		} catch ( e ) {
@@ -59,7 +58,8 @@ jetpack_post_by_email = {
 	},
 
 	handle_regenerated: function( response ) {
-		var regenerated = false, error;
+		var regenerated = false;
+		var error;
 		try {
 			error = JSON.parse( response );
 		} catch ( e ) {
@@ -95,14 +95,15 @@ jetpack_post_by_email = {
 	},
 
 	handle_disabled: function( response ) {
-		var disabled = false, error;
+		var disabled = false;
+		var error;
 		try {
 			error = JSON.parse( response );
 		} catch ( e ) {
 			disabled = true;
 		}
 
-		if ( 'error' !== error.response ) {
+		if ( 'error' != error.response ) {
 			disabled = true;
 		}
 

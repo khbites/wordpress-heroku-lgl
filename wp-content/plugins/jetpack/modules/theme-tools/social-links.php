@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Social Links.
  *
@@ -10,14 +11,6 @@
  *     'facebook', 'twitter', 'linkedin', 'tumblr', 'google_plus',
  * ) );
  */
-
-function jetpack_theme_supports_social_links() {
-	if ( current_theme_supports( 'social-links' ) ) {
-		new Social_Links();
-	}
-}
-add_action( 'init', 'jetpack_theme_supports_social_links', 30 );
-
 class Social_Links {
 
 	/**
@@ -75,16 +68,16 @@ class Social_Links {
 		}
 	}
 
-	public function admin_setup() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+	function admin_setup() {
+		if ( ! is_admin() || ! current_user_can( 'manage_options' ) )
 			return;
-		}
 
-		if ( ! is_admin() && ! $this->is_customize_preview() ) {
+		global $publicize;
+		if ( ! is_a( $publicize, 'Publicize' ) )
 			return;
-		}
 
-		$this->publicize = publicize_init();
+
+		$this->publicize = $publicize;
 		$publicize_services = $this->publicize->get_services( 'connected' );
 		$this->services  = array_intersect( array_keys( $publicize_services ), $this->theme_supported_services );
 
@@ -100,7 +93,7 @@ class Social_Links {
 	 *
 	 * @return void
 	 */
-	public function check_links() {
+	function check_links() {
 		$active_links = array_intersect_key( $this->links, array_flip( $this->services ) );
 
 		if ( $active_links !== $this->links ) {
@@ -202,12 +195,6 @@ class Social_Links {
 
 		return $choices;
 	}
-
-	/**
-	 * Back-compat function for versions prior to 4.0.
-	 */
-	private function is_customize_preview() {
-		global $wp_customize;
-		return is_a( $wp_customize, 'WP_Customize_Manager' ) && $wp_customize->is_preview();
-	}
 }
+
+$jetpack_social_links = new Social_Links;

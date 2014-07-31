@@ -2,7 +2,7 @@
 		<div class="jetpack-wrap-container">
 			<div class="jetpack-text-container">
 				<h4>
-					<p><?php echo $data['notice']; ?></p>
+					<p><?php echo $notice; ?></p>
 				</h4>
 			</div>
 		</div>

@@ -1,5 +1,3 @@
-/* jshint onevar: false, smarttabs: true, devel: true */
-
 (function($) {
 	var NovaCheckBoxes = {
 		inputs: null,
@@ -36,7 +34,7 @@
 			NovaCheckBoxes.inputs.first().prop( 'checked', true );
 		},
 
-		checkOne: function( /*event*/ ) {
+		checkOne: function( event ) {
 			if ( $( this ).is( ':checked' ) ) {
 				return NovaCheckBoxes.inputs.not( this ).prop( 'checked', false );
 			} else {
