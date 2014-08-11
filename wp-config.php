@@ -28,7 +28,7 @@ define( 'AUTOMATIC_UPDATER_DISABLED', true );
 //   You can also setup a scheduler in heroku
 //   heroku addons:add scheduler:standard
 //   see https://github.com/mchung/heroku-buildpack-wordpress **/
-define('DISABLE_WP_CRON', 'true');
+define('DISABLE_WP_CRON', 'false');
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
