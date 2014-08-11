@@ -1,6 +1,3 @@
-/* jshint onevar: false, smarttabs: true */
-/* global postboxes, addLoadEvent */
-
 ( function ( $ ) {
 	var safe, win, safecssResize, safecssInit;
 
@@ -19,11 +16,11 @@
 		$( '#safecssform' ).on( 'click', '#preview', function ( e ) {
 			e.preventDefault();
 
-			document.forms.safecssform.target = 'csspreview';
-			document.forms.safecssform.action.value = 'preview';
-			document.forms.safecssform.submit();
-			document.forms.safecssform.target = '';
-			document.forms.safecssform.action.value = 'save';
+			document.forms["safecssform"].target = "csspreview";
+			document.forms["safecssform"].action.value = 'preview';
+			document.forms["safecssform"].submit();
+			document.forms["safecssform"].target = "";
+			document.forms["safecssform"].action.value = 'save';
 		} );
 	};
 
@@ -77,7 +74,7 @@ jQuery( function ( $ ) {
 		e.preventDefault();
 
 		$( '#css-mode-select' ).slideUp();
-		$( '#css-mode-display' ).text( $( 'input[name=add_to_existing_display]:checked' ).val() == 'true' ? 'Add-on' : 'Replacement' ); // jshint ignore:line
+		$( '#css-mode-display' ).text( $( 'input[name=add_to_existing_display]:checked' ).val() == 'true' ? 'Add-on' : 'Replacement' );
 		$( '#add_to_existing' ).val( $( 'input[name=add_to_existing_display]:checked' ).val() );
 		$( '.edit-css-mode' ).show();
 	} );

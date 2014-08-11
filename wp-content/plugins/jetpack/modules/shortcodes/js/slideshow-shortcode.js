@@ -1,6 +1,3 @@
-/* jshint onevar:false, loopfunc:true */
-/* global jetpackSlideshowSettings, escape */
-
 function JetpackSlideshow( element, width, height, transition ) {
 	this.element = element;
 	this.images = [];
@@ -8,9 +5,8 @@ function JetpackSlideshow( element, width, height, transition ) {
 	this.transition = transition || 'fade';
 
 	var currentWidth = this.element.width();
-	if ( !width || width > currentWidth ) {
+	if ( !width || width > currentWidth )
 		width = currentWidth;
-	}
 
 	this.width = width;
 	this.height = height;
@@ -53,7 +49,7 @@ JetpackSlideshow.prototype.init = function() {
 		container.style.lineHeight = this.height + 'px';
 
 		// Hide loading image once first image has loaded.
-		if ( i === 0 ) {
+		if ( i == 0 ) {
 			if ( img.complete ) {
 				// IE, image in cache
 				setTimeout( function() {
@@ -106,7 +102,7 @@ JetpackSlideshow.prototype.finishInit_ = function() {
 	} );
 
 	var slideshow = this.element;
-	jQuery( this.controls.stop ).click( function() {
+	jQuery( this.controls['stop'] ).click( function() {
 		var button = jQuery(this);
 		if ( ! button.hasClass( 'paused' ) ) {
 			slideshow.cycle( 'pause' );
@@ -132,14 +128,13 @@ JetpackSlideshow.prototype.finishInit_ = function() {
 };
 
 JetpackSlideshow.prototype.renderControls_ = function() {
-	if ( this.controlsDiv_ ) {
+	if ( this.controlsDiv_ )
 		return;
-	}
 
 	var controlsDiv = document.createElement( 'div' );
 	controlsDiv.className = 'slideshow-controls';
 
-	var controls = [ 'prev', 'stop', 'next' ];
+	controls = [ 'prev', 'stop', 'next' ];
 	for ( var i = 0; i < controls.length; i++ ) {
 		var controlName = controls[i];
 		var a = document.createElement( 'a' );
@@ -151,16 +146,15 @@ JetpackSlideshow.prototype.renderControls_ = function() {
 	this.controlsDiv_ = controlsDiv;
 };
 
-JetpackSlideshow.prototype.onCyclePrevNextClick_ = function( isNext, i/*, slideElement*/ ) {
+JetpackSlideshow.prototype.onCyclePrevNextClick_ = function( isNext, i, slideElement ) {
 	// If blog_id not present don't track page views
-	if ( ! jetpackSlideshowSettings.blog_id ) {
+	if ( ! jetpackSlideshowSettings.blog_id )
 		return;
-	}
 
 	var postid = this.images[i].id;
 	var stats = new Image();
 	stats.src = document.location.protocol +
-		'//pixel.wp.com/g.gif?host=' +
+		'//stats.wordpress.com/g.gif?host=' +
 		escape( document.location.host ) +
 		'&rand=' + Math.random() +
 		'&blog=' + jetpackSlideshowSettings.blog_id +
@@ -177,9 +171,8 @@ JetpackSlideshow.prototype.onCyclePrevNextClick_ = function( isNext, i/*, slideE
 		$( '.jetpack-slideshow' ).each( function () {
 			var container = $( this );
 
-			if ( container.data( 'processed' ) ) {
+			if ( container.data( 'processed' ) )
 				return;
-			}
 
 			var slideshow = new JetpackSlideshow( container, container.data( 'width' ), container.data( 'height' ), container.data( 'trans' ) );
 			slideshow.images = container.data( 'gallery' );

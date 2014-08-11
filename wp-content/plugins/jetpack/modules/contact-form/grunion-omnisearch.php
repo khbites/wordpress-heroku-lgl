@@ -51,26 +51,15 @@ class Jetpack_Omnisearch_Grunion extends WP_List_Table {
 	}
 
 	function column_default( $post, $column_name ) {
-		// Make sure the global $post is our post.
-		$_post           = $GLOBALS['post'];
-		$GLOBALS['post'] = $post;
-		setup_postdata( $post );
-
 		switch ( $column_name ) {
 			case 'feedback_from':
 			case 'feedback_message':
 			case 'feedback_date':
 				ob_start();
 				grunion_manage_post_columns( $column_name, $post->ID );
-				$column_contents = ob_get_clean();
-				break;
+				return ob_get_clean();
 			default:
-				$column_contents = '<pre>' . print_r( $post, true ) . '</pre>';
-				break;
+				return '<pre>' . print_r( $post, true ) . '</pre>';
 		}
-
-		$GLOBALS['post'] = $_post;
-		wp_reset_postdata();
-		return $column_contents;
 	}
 }

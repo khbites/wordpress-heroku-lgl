@@ -1,8 +1,3 @@
-/* jshint onevar:false */
-/* global audioshortcode */
-
-// Note: This file no longer exists on wpcom.
-
 (function($) {
 
 window.audioshortcode = {
@@ -24,7 +19,7 @@ window.audioshortcode = {
 		}
 
 		// if the browser removed the script, no-op
-		var player = $( '#wp-as-' + player_id ).get(0);
+		player = $( '#wp-as-' + player_id ).get(0);
 		if ( typeof player === 'undefined' ) {
 			return;
 		}
@@ -99,7 +94,7 @@ window.audioshortcode = {
 		if ( 0 === this[player_id].files.length ) {
 			$( '#wp-as-' + player_id + '-container' ).html( $( '#wp-as-' + player_id + '-nope' ).html() );
 			$( '#wp-as-' + player_id + '-controls' ).html( '' );
-		} else if ( 1 === this[player_id].files.length ) {
+		} else if ( 1 == this[player_id].files.length ) {
 			$( '#wp-as-' + player_id + '-controls' ).html( '' );
 		}
 	},
@@ -137,7 +132,7 @@ window.audioshortcode = {
 	next_track: function( player_id, fromClick, loop ) {
 		var player = $( '#wp-as-' + player_id ).get(0);
 		var files = this[player_id].files;
-		if ( fromClick && ( player.paused || files.length-1 === this[player_id].i ) ) {
+		if ( fromClick && ( player.paused || files.length-1 == this[player_id].i ) ) {
 			return;
 		}
 

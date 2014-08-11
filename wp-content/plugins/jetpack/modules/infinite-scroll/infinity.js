@@ -71,6 +71,7 @@ Scroller = function( settings ) {
 		// Ensure that enough posts are loaded to fill the initial viewport, to compensate for short posts and large displays.
 		self.ensureFilledViewport();
 		this.body.bind( 'post-load', { self: self }, self.checkViewportOnLoad );
+		this.body.bind( 'post-load', { self: self }, self.initializeMejs );
 	} else if ( type == 'click' ) {
 		if ( this.click_handle ) {
 			this.element.append( this.handle );
@@ -86,9 +87,6 @@ Scroller = function( settings ) {
 			self.refresh();
 		});
 	}
-
-	// Initialize any Core audio or video players loaded via IS
-	this.body.bind( 'post-load', { self: self }, self.initializeMejs );
 };
 
 /**
@@ -314,7 +312,7 @@ Scroller.prototype.refresh = function() {
 
 				// Record pageview in WP Stats, if available.
 				if ( stats )
-					new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?' + stats + '&post=0&baba=' + Math.random();
+					new Image().src = document.location.protocol + '//stats.wordpress.com/g.gif?' + stats + '&post=0&baba=' + Math.random();
 
 				// Add new posts to the postflair object
 				if ( 'object' == typeof response.postflair && 'object' == typeof WPCOM_sharing_counts )
@@ -341,20 +339,12 @@ Scroller.prototype.refresh = function() {
 				}
 
 				// Update currentday to the latest value returned from the server
-				if ( response.currentday ) {
+				if (response.currentday)
 					self.currentday = response.currentday;
-				}
 
 				// Fire Google Analytics pageview
-				if ( self.google_analytics ) {
-					var ga_url = self.history.path.replace( /%d/, self.page );
-					if ( 'object' === typeof _gaq ) {
-						_gaq.push( [ '_trackPageview', ga_url ] );
-					}
-					if ( 'function' === typeof ga ) {
-						ga( 'send', 'pageview', ga_url );
-					}
-				}
+				if ( self.google_analytics && 'object' == typeof _gaq )
+					_gaq.push(['_trackPageview', self.history.path.replace( /%d/, self.page ) ]);
 			}
 		});
 

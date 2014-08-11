@@ -49,7 +49,6 @@ foreach ( $GLOBALS['csstidy']['multiple_properties'] as $property ) {
 $GLOBALS['csstidy']['at_rules']['-webkit-keyframes'] = 'at';
 $GLOBALS['csstidy']['at_rules']['-moz-keyframes'] = 'at';
 $GLOBALS['csstidy']['at_rules']['-ms-keyframes'] = 'at';
-$GLOBALS['csstidy']['at_rules']['-o-keyframes'] = 'at';
 
 /**
  * Non-standard viewport rule.
@@ -74,7 +73,6 @@ $GLOBALS['csstidy']['all_properties']['-webkit-transform-origin-x'] = 'CSS3.0';
 $GLOBALS['csstidy']['all_properties']['-webkit-transform-origin-y'] = 'CSS3.0';
 $GLOBALS['csstidy']['all_properties']['-webkit-transform-origin-z'] = 'CSS3.0';
 $GLOBALS['csstidy']['all_properties']['-webkit-font-smoothing'] = 'CSS3.0';
-$GLOBALS['csstidy']['all_properties']['-moz-osx-font-smoothing'] = 'CSS3.0';
 $GLOBALS['csstidy']['all_properties']['-font-smooth'] = 'CSS3.0';
 $GLOBALS['csstidy']['all_properties']['-o-object-fit'] = 'CSS3.0';
 $GLOBALS['csstidy']['all_properties']['object-fit'] = 'CSS3.0';

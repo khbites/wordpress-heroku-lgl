@@ -16,7 +16,7 @@
 	 * Presentation constructor
 	 */
 	function Presentation (wrapper) {
-		var _self, duration, new_css, ie_regex, matches;
+		var _self, size, duration, new_css, ie_regex, matches;
 
 		_self = this;
 
@@ -69,9 +69,8 @@
 
 		// Register resizing to window when fullscreen
 		$(window).resize(function() {
-			if ( _self.fullscreen ) {
+			if ( _self.fullscreen )
 				_self.resizePresentation();
-			}
 		});
 
 		// Register the nav bars to move the slides
@@ -112,9 +111,8 @@
 
 		// Register ESC key to exit fullscreen
 		$(window).on('keydown', function( event ) {
-			if ( event.which === 27 ) {
+			if ( event.which == 27 )
 				_self.setFullscreen( false );
-			}
 		});
 
 		// Start the presentation
@@ -178,7 +176,7 @@
 				$.extend(new_css, {
 					'-moz-transform'   : scale,
 					'-ms-transform'    : scale,
-					'transform'        : scale
+					'transform'        : scale,
 				});
 			} else {
 				// webkit scales everything with zoom so we need to offset the right amount
@@ -230,9 +228,8 @@
 		setAutoplay: function ( on ) {
 			var _self = this, newAutoplayTime;
 
-			if ( _self.autoPlaying === on ) {
+			if ( _self.autoPlaying == on )
 				return;
-			}
 
 			newAutoplayTime = (on && _self.autoplayTime > 0) ? _self.autoplayTime : 0;
 			_self.slideshow.jmpress('settings').duration.defaultValue = newAutoplayTime;
