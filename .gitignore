@@ -8,6 +8,7 @@ sitemap.xml*
 chst
 chwww
 db.*sh
+wp-content/themes/superstore/
 # submodules that cause temporary problems when switching branches
 # e.g. mv wpro wpro.submodule
 #      git checkout master
